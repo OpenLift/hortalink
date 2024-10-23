@@ -1,0 +1,22 @@
+---
+import "@styles/pages/cart/cart.scss";
+
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+import Header from "@components/pages/cart/Header.astro";
+import CartProducts from "@components/pages/cart/CartProducts";
+---
+
+<BaseLayout>
+    <Fragment slot="head">
+        <title>Hortalink | Carrinho</title>
+    </Fragment>
+    <Fragment slot="body">
+        <Header />
+        <main>
+            <section class="cart_container">
+                <CartProducts client:only="react"/>
+            </section>
+        </main>
+    </Fragment>
+</BaseLayout>

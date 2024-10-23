@@ -1,6 +1,6 @@
 import type { User } from "@interfaces/User"
 import RequestAPI from "./APIFunctions/RequestAPI"
-import type { DetailedProduct, FullRating, Product, ProductFilter, ProductFullTextSearch } from "@interfaces/Product"
+import type { Cart, DetailedProduct, FullRating, Product, ProductFilter, ProductFullTextSearch } from "@interfaces/Product"
 
 class APIWrapper<F extends RequestAPIFrom> {
     private from: F
@@ -117,6 +117,12 @@ class APIWrapper<F extends RequestAPIFrom> {
         const data = await RequestAPI(this.from, `/v1/sellers/${seller_id}/products/${product_id}/ratings`, params, "include", {
             "Cookie": `session_id=${session_id}`
         }) as FullRating
+
+        return data
+    }
+
+    public async getCart(): Promise<Cart[]> {
+        const data = await RequestAPI(this.from, `/v1/users/@me/cart`, undefined, "include") as Cart[]
 
         return data
     }

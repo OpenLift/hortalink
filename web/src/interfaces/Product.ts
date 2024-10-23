@@ -83,6 +83,26 @@ interface FullRating {
     ratings: Rating[];
 }
 
+interface Cart {
+    user: {
+        id: number,
+        name: string,
+        avatar?: string
+    },
+    products: CartProduct[]
+}
+
+interface CartProduct {
+    order_id: number,
+    withdrawn: number,
+    amount: number,
+    product_id: number,
+    product_name: string,
+    price: string,
+    photo: string,
+    unit: string
+}
+
 export type {
     Product,
     ProductFilter,
@@ -90,5 +110,6 @@ export type {
     DetailedProduct,
     ProductSeller,
     Rating,
-    FullRating
+    FullRating,
+    Cart
 }
