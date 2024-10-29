@@ -5,7 +5,7 @@ export default class MyImage extends React.Component<{ src: string, alt: string,
 
     componentDidMount = () => {
         if (!this.img) {
-            this.img = new Image(this.props.width, this.props.height);
+            this.img = new Image(this.props.width, this.props.height)
 
             this.img.onload = () => {
                 this.setState({ loaded: true });

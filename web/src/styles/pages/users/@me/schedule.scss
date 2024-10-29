@@ -1,0 +1,153 @@
+@use "../../../colors";
+
+@mixin flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+header, main {
+    padding: 8px;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin: 0;
+}
+
+.create_schedule {
+    width: 100%;
+    max-width: 415px;
+
+    margin: 1rem auto;
+    border-radius: 15px;
+
+    background-color: colors.$group1_color_3;
+    color: colors.$lightest;
+
+    box-shadow: 0px 4px 4px 0px #00000040;
+    padding: 15px;
+
+    .create_schedule_header {
+        @include flex();
+
+        width: 90%;
+        margin: 1rem auto 2rem auto;
+
+        h2 {
+            font-size: 1.4em;
+            font-weight: 800;
+        }
+    }
+
+    .create_schedule_days_selector {
+        @include flex();
+
+        gap: 0.4rem;
+
+        .day {
+            @include flex();
+
+            border: 0.85px solid colors.$light_1;
+            border-radius: 7px;
+
+            width: 45px;
+            height: 62px;
+
+            font-size: 0.938em;
+            text-align: center;
+
+            background-color: transparent;
+            color: white;
+
+            text-transform: capitalize;
+
+            cursor: pointer;
+        }
+
+        .selected {
+            background-color: white;
+            color: colors.$mid_1;
+        }
+    }
+
+    .create_schedule_button {
+        @include flex();
+
+        width: 100%;
+        max-width: 265px;
+        height: 53px;
+
+        margin: 1.5rem auto 1rem auto;;
+
+        border-radius: 5px;
+        border: none;
+
+        background-color: light;
+        color: colors.$mid_1;
+
+        font-size: 0.938em;
+        font-weight: 800;
+
+        cursor: pointer;
+    }
+}
+
+h2.title {
+    font-size: 1.56em;
+    text-align: center;
+    font-weight: 700;
+
+    margin: 1.7rem auto;
+    color: #262626;
+}
+
+.schedules {
+    @include flex();
+    flex-direction: column;
+    gap: 1rem;
+
+    .schedule {
+        @include flex();
+        gap: 0.4rem;
+
+        width: 100%;
+        max-width: 388px;
+        height: 97px;
+
+        background-color: scale-color($color: colors.$group1_color_3, $alpha: -78%);
+        border-radius: 10px;
+
+        box-shadow: 0px 4px 4px 0px #00000040;
+
+        .schedule_content {
+            @include flex();
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 1rem;
+
+            width: 70%;
+
+            font-size: 1.25em;
+            font-weight: 600;
+            color: scale-color($color: colors.$dark_2, $alpha: -40%);
+
+            overflow: hidden;
+            
+            p {
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+            }
+
+        }
+
+        .edit_schedule {
+            @include flex();
+
+            background-color: scale-color($color: colors.$group1_color_3, $alpha: -70%);
+            
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+        }
+    }
+}

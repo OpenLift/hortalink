@@ -65,7 +65,7 @@ import FilterIcon from "./Filter";
         product_names.set(results)
     }
 
-    input.addEventListener("input", (e) => {
+    input?.addEventListener("input", (e) => {
         if (timeout) {
             clearTimeout(timeout)
         }

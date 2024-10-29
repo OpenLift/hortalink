@@ -1,6 +1,7 @@
 import type { User } from "@interfaces/User"
 import RequestAPI from "./APIFunctions/RequestAPI"
 import type { Cart, DetailedProduct, FullRating, Product, ProductFilter, ProductFullTextSearch } from "@interfaces/Product"
+import type { Schedule } from "@interfaces/Schedule"
 
 class APIWrapper<F extends RequestAPIFrom> {
     private from: F
@@ -123,6 +124,29 @@ class APIWrapper<F extends RequestAPIFrom> {
 
     public async getCart(): Promise<Cart[]> {
         const data = await RequestAPI(this.from, `/v1/users/@me/cart`, undefined, "include") as Cart[]
+
+        return data
+    }
+
+    public async getSellerSchedules(seller_id: number, session_id?: F extends RequestAPIFrom.Server ? string : never): Promise<Schedule[]> {
+        switch (this.from) {
+            case RequestAPIFrom.Server:
+                return await this.getSellerSchedulesFromServer(seller_id, session_id)
+            case RequestAPIFrom.Client:
+                return await this.getSellerSchedulesFromClient(seller_id)
+        }
+    }
+
+    private async getSellerSchedulesFromClient(seller_id: number) {
+        const data = await RequestAPI(this.from, `/v1/sellers/${seller_id}/schedules`, undefined, "include") as Schedule[]
+
+        return data
+    }
+
+    private async getSellerSchedulesFromServer(seller_id: number, session_id: string) {
+        const data = await RequestAPI(this.from, `/v1/sellers/${seller_id}/schedules`, undefined, "include", {
+            "Cookie": `session_id=${session_id}`
+        }) as Schedule[]
 
         return data
     }

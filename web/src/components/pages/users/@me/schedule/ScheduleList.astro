@@ -1,0 +1,30 @@
+---
+import type { Schedule } from '@interfaces/Schedule'
+
+interface Props {
+    schedules: Schedule[]
+}
+
+const schedules = Astro.props.schedules
+---
+
+<section class="schedules">
+    {
+        schedules?.map((schedule) => (
+            <div class="schedule">
+                <div class="schedule_content">
+                    <p>Horário: {schedule.start_time} - {schedule.end_time}</p>
+                    <p>Local: {schedule.address}</p>
+                </div>
+                <a class="edit_schedule" href={`/schedules/edit/${schedule.id}`}>
+                    <img
+                        src="/assets/pencil_green.svg"
+                        width={24}
+                        height={24}
+                        alt="Imagem de uma caneta. Clique para editar o agendamento."
+                    />
+                </a>
+            </div>
+        ))
+    }
+</section>

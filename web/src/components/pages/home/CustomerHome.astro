@@ -71,7 +71,7 @@ import SearchContainer from "./search/SearchContainer.astro";
         hideNoSearchIcons()
     }
 
-    home_nav_link.addEventListener("click", (e) => {
+    home_nav_link?.addEventListener("click", (e) => {
         e.preventDefault()
 
         searchpage.hidden = true
@@ -81,7 +81,7 @@ import SearchContainer from "./search/SearchContainer.astro";
         screen.set(Screen.Home)
     })
 
-    search_nav_link.addEventListener("click", (e) => {
+    search_nav_link?.addEventListener("click", (e) => {
         e.preventDefault()
 
         searchpage.hidden = false
@@ -91,7 +91,7 @@ import SearchContainer from "./search/SearchContainer.astro";
         screen.set(Screen.Menu)
     })
     
-    searchbar.addEventListener("focus", () => {
+    searchbar?.addEventListener("focus", () => {
         if(searchpage.hidden === false) return
         searchpage.hidden = false
         homepage.hidden = true

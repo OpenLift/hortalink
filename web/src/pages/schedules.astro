@@ -1,0 +1,32 @@
+---
+import "@styles/pages/users/@me/schedule.scss";
+
+import BaseLayout from "@layouts/BaseLayout.astro";
+import APIWrapper, { RequestAPIFrom } from "@HortalinkAPIWrapper";
+
+import CreateSchedule from "@components/pages/users/@me/schedule/CreateSchedule";
+import ScheduleList from "@components/pages/users/@me/schedule/ScheduleList.astro";
+
+const wrapper = new APIWrapper(RequestAPIFrom.Server)
+
+const session_cookie = Astro.cookies.get("session_id")
+const session_id = session_cookie?.value || null
+
+const session = session_id ? await wrapper.getCurrentSession(session_id) : null
+const schedules = session ? await wrapper.getSellerSchedules(session.profile.id, session_id) : null
+---
+
+<BaseLayout>
+    <Fragment slot="header">
+        <title>Hortalink | Agenda</title>
+    </Fragment>
+    <Fragment slot="body">
+        <header>
+            <CreateSchedule client:load />
+        </header>
+        <main>
+            <h2 class="title">Agendamentos</h2>
+            <ScheduleList schedules={schedules} />
+        </main>
+    </Fragment>
+</BaseLayout>

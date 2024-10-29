@@ -4,24 +4,30 @@ import "@styles/pages/home/unsigned.scss";
 import BaseLayout from "@layouts/BaseLayout.astro";
 
 import Unsigned from "@components/pages/home/Unsigned.astro";
-import SignedHome from "@components/pages/home/SignedHome.astro";
+import CustomerHome from "@components/pages/home/CustomerHome.astro";
+import APIWrapper, { RequestAPIFrom } from "@HortalinkAPIWrapper";
+import type { User } from "@interfaces/User";
+
+const wrapper = new APIWrapper(RequestAPIFrom.Server)
+
+const session_cookie = Astro.cookies.get("session_id")
+const session_id = session_cookie?.value || null
+
+const session = session_id ? await wrapper.getCurrentSession(session_id) : null
+
+export const prerender = false
 ---
 
-<BaseLayout>
+<BaseLayout no_session_fetch={true}>
     <Fragment slot="head">
         <title>Hortalink</title>
     </Fragment>
     <Fragment slot="body">
-        <div id="unsigned" hidden>
-            <Unsigned />
-        </div>
-
-        <div id="home" hidden>
-            <SignedHome />
-        </div>
+        { session && !session.profile.is_seller && <CustomerHome /> }
+        { !session && <Unsigned /> }
     </Fragment>
     <script>
-        import Session from "@stores/Session";
+        /*import Session from "@stores/Session";
 
         const navbar = document.querySelector<HTMLDivElement>(".navbar_container")
         const Unsigned = document.querySelector<HTMLDivElement>("#unsigned")
@@ -45,6 +51,6 @@ import SignedHome from "@components/pages/home/SignedHome.astro";
             }
 
             navbar.hidden = unsigned
-        }
+        }*/
     </script>
 </BaseLayout>
