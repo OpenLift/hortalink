@@ -1,0 +1,26 @@
+@use "../../colors";
+
+.product_section {
+    margin: auto;
+    width: 100%;
+    max-width: 490px;
+
+    .section_header {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+
+        padding-left: 15px;
+        padding-right: 15px;
+
+        h2 {
+            font-size: 1.2em;
+        }
+
+        .more {
+            justify-self: end;
+            color: colors.$dark_1;
+            text-decoration: none;
+        }
+    }
+}

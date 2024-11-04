@@ -1,0 +1,49 @@
+@mixin flex() {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.categories_title {
+    h1 {
+        text-align: center;
+        font-weight: 700;
+
+        font-size: 1.7em;
+    }
+
+    margin: 1.5rem 0;
+}
+
+.categories {
+    @include flex();
+    gap: 2rem;
+
+    flex-wrap: wrap;
+
+    .category {
+        text-align: center;
+
+        .image {
+            @include flex();
+
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+    
+            overflow: hidden;
+    
+            img {
+                display: block;
+                object-fit: cover;
+            }
+        }
+
+        p {
+            font-size: 1.1em;
+            font-weight: 600;
+
+            margin-top: 0.2rem;
+        }
+    }
+}

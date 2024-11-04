@@ -1,0 +1,91 @@
+@use "../colors";
+
+.modal-container {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    background-color: rgba(0, 0, 0, 0.5);
+
+    width: 100%;
+    min-height: 100vh;
+    padding: 20px;
+
+    overflow: auto;
+
+    .modal-content {
+        position: fixed;
+        margin: auto;
+
+        max-width: 531px;
+        width: 90%;
+        max-height: 100%;
+
+        overflow: auto;
+
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: colors.$light;
+        border-radius: 6px;
+
+        padding: 8px;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+
+        .modal-header {
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 1rem;
+            
+            padding: 15px;
+            padding-left: 18px;
+            padding-right: 18px;
+
+            h2 {
+                font-weight: 500;
+                font-size: 1.4em;
+            }
+        }
+
+        .modal-body {
+            padding: 20px;
+
+            img {
+                display: block;
+                max-width: 100%;
+                height: auto;
+            }
+        }
+
+        .modal-buttons {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-left: 20px;
+
+            button {
+                display: block;
+                text-align: center;
+                padding: 8px 16px;
+
+                border-radius: 8px;
+            }
+
+            .modal-cancel-action {
+                background-color: red;
+                color: colors.$light;
+            }
+
+            .modal-confirm-action {
+                background-color: colors.$secondary;
+                color: colors.$light;
+            }
+        }
+    }
+}

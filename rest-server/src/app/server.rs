@@ -1,10 +1,12 @@
-use axum::{Extension, Router};
 use axum::http::{header, Method};
-use axum_login::AuthManagerLayerBuilder;
-use axum_login::tower_sessions::{Expiry, SessionManagerLayer};
+use axum::{Extension, Router};
+use axum::extract::{MatchedPath, Request};
 use axum_login::tower_sessions::cookie::time::Duration;
+use axum_login::tower_sessions::{Expiry, SessionManagerLayer};
+use axum_login::AuthManagerLayerBuilder;
 use sqlx::{Pool, Postgres};
 use tower_http::cors::CorsLayer;
+use tower_http::trace::TraceLayer;
 use tower_sessions_sqlx_store::PostgresStore;
 
 use app_core::database::SqlxManager;
@@ -16,7 +18,7 @@ use crate::app::provider::OAuthProvider;
 #[derive(Clone)]
 pub struct AppState {
     pub settings: AppSettings,
-    pub pool: Pool<Postgres>
+    pub pool: Pool<Postgres>,
 }
 
 pub struct Server {
@@ -24,8 +26,8 @@ pub struct Server {
 }
 
 impl Server {
-    pub async fn new(settings: &str) -> Self {
-        let settings = AppSettings::new(settings);
+    pub async fn new() -> Self {
+        let settings = AppSettings::new();
         let database = SqlxManager::new(&settings.database)
             .await;
 
@@ -41,7 +43,7 @@ impl Server {
         let gate = AuthGate::new(state.pool.clone());
         let provider = OAuthProvider::new(
             &state.settings.secrets,
-            state.settings.web.rest.protocol_url()
+            state.settings.web.rest.get_proxy(),
         );
 
         Router::new()
@@ -53,12 +55,27 @@ impl Server {
             )
             .layer(Extension(state))
             .layer(Extension(provider))
+            .layer(
+                TraceLayer::new_for_http()
+                    .make_span_with(|req: &Request| {
+                        let method = req.method();
+                        let uri = req.uri();
+                        
+                        let matched_path = req
+                            .extensions()
+                            .get::<MatchedPath>()
+                            .map(|matched_path| matched_path.as_str());
+
+                        axum_login::tracing::debug_span!("request", %method, %uri, matched_path)
+                    })
+                    .on_failure(())
+            )
     }
 
     pub async fn run(self) {
-        log::info!("Starting axum server with tokio...");
+        log::info!("Starting axum server with tokio on {}", self.state.settings.web.rest.socket());
 
-        let listener = tokio::net::TcpListener::bind(self.state.settings.web.rest.url())
+        let listener = tokio::net::TcpListener::bind(self.state.settings.web.rest.socket())
             .await
             .unwrap();
         axum::serve(listener, Self::router(self.state))
@@ -69,16 +86,15 @@ impl Server {
     fn configure_cors(state: &AppState) -> CorsLayer {
         CorsLayer::new()
             .allow_credentials(true)
-            .allow_origin([
-                state.settings.web.client.protocol_url().parse()
-                    .unwrap()
-            ])
+            .allow_origin(
+                [state.settings.web.client.protocol_url().parse().unwrap()]
+            )
             .allow_headers([
-                header::AUTHORIZATION, header::CONTENT_TYPE,
+                header::CONTENT_TYPE
             ])
             .allow_methods([
                 Method::GET, Method::PUT,
-                Method::DELETE, Method::PATCH,
+                Method::DELETE, Method::PATCH
             ])
     }
 
@@ -87,11 +103,13 @@ impl Server {
             .with_table_name("sessions")
             .unwrap();
 
+        let domain = state.settings.web.client.proxy.to_string();
+        let domain = domain.split(':').next().map(String::from).unwrap();
+
         SessionManagerLayer::new(session_store)
             .with_secure(false)
             .with_name("session_id")
-            .with_expiry(Expiry::OnInactivity(Duration::days(10)))
-            .with_domain(state.settings.web.rest.host.clone())
-            .with_secure(false)
+            .with_expiry(Expiry::OnInactivity(Duration::days(20)))
+            .with_domain(domain)
     }
 }

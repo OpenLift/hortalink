@@ -1,16 +1,17 @@
-use crate::socket::server::SocketServer;
+use crate::server::Application;
 
-pub mod socket;
-mod handshake;
+pub mod http;
+pub mod server;
 pub mod json;
-mod request;
 mod events;
+mod commands;
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
+    dotenv::dotenv().ok();
     env_logger::init();
 
-    let server = SocketServer::new()
+    let server = Application::new()
         .await;
 
     server.run()

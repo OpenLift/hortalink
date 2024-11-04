@@ -1,0 +1,23 @@
+@use "../../colors";
+
+.results_selector {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin: 1rem 0 1rem 0;
+
+    p {
+        border-bottom: 1px solid colors.$terciary-light;
+
+        padding: 5px 50px;
+        font-size: 1.25em;
+
+        cursor: pointer;
+    }
+
+    p.selected {
+        color: colors.$primary-dark;
+        border-bottom: 2px solid colors.$primary-dark;
+    }
+}

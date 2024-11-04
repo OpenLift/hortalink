@@ -1,0 +1,75 @@
+---
+import "@styles/pages/home/search/searchbar.scss";
+
+import SearchBarResults from "./SearchBarResults";
+import FilterIcon from "./Filter";
+---
+
+<section class="search_global_container">
+    <section class="searchbar_container">
+        <div class="input">
+            <input type="text" id="global__search" placeholder="Procurar por..." />
+            <div class="search_icon">
+                <img
+                    src="/assets/search.svg"
+                    alt="Ícone de lupa. Não é necessário clicar, apenas digite que a pesquisa é feita automaticamente."
+                    width="19"
+                    height="19"
+                />
+            </div>
+        </div>
+        <div class="icon nosearch">
+            <img
+                src="/assets/bell.svg"
+                alt="Ícone de sino na cor verde. Clique para visualizar notificações."
+                width="28"
+                height="28"
+            />
+        </div>
+        <div class="icon nosearch">
+            <img
+                src="/assets/comments-home.svg"
+                alt="Ícone de comentários na cor verde. Clique para visualizar seus chats."
+                width="28"
+                height="28"
+            />
+        </div>
+        <FilterIcon client:load />
+    </section>
+    <SearchBarResults client:only="react" />
+</section>
+
+<script>
+    import APIWrapper, { RequestAPIFrom } from "@HortalinkAPIWrapper";
+    import { product_names } from "./Search";
+
+    import type { ProductSelector } from "./Search";
+
+    const input = document.querySelector<HTMLInputElement>("#global__search")
+    const wrapper = new APIWrapper(RequestAPIFrom.Client)
+
+    let timeout: NodeJS.Timeout
+
+    async function search() {
+        if(!input.value) {
+            product_names.set([])
+            return;
+        }
+
+        const query = input.value
+        const searchResults = await wrapper.search(query, 1, 10)
+        const results: ProductSelector[] = searchResults.map((r) => {
+            return { product_name: r.product_name, product_id: r.product_id }
+        })
+
+        product_names.set(results)
+    }
+
+    input?.addEventListener("input", (e) => {
+        if (timeout) {
+            clearTimeout(timeout)
+        }
+
+        timeout = setTimeout(search, 600)
+    })
+</script>

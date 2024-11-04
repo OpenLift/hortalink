@@ -1,14 +1,16 @@
 use serde::{Deserialize, Serialize};
+
 use common::entities::NotificationType;
 
-#[derive(Serialize, Deserialize)]
-pub struct UserNotification {
-    id: i32,
+#[derive(Serialize, Deserialize, Clone)]
+pub struct NotificationCreated {
+    pub id: i32,
+    #[serde(skip_serializing)]
     pub user_id: i32,
-    title: String,
-    content: String,
-    read: bool,
+    pub title: String,
+    pub content: String,
+    pub read: bool,
     #[serde(rename = "type")]
-    notification_type: NotificationType,
-    icon: Option<String>
+    pub notification_type: NotificationType,
+    pub icon: Option<String>,
 }

@@ -11,14 +11,24 @@ pub async fn products(
 ) -> Result<Json<Vec<Order>>, ApiError> {
     let cart_products = sqlx::query_as::<_, Order>(
         r#"
-            SELECT c.id AS order_id, c.withdrawn, c.amount, 
-                sp.price, u.name, u.avatar, sp.id AS product_id, p.photo,
-                sp.seller_id AS user_id, p.name AS product_name
+            SELECT u.name, u.avatar, sp.seller_id AS user_id,
+                jsonb_agg(json_build_object(
+                    'order_id', c.id,
+                    'withdrawn', c.withdrawn,
+                    'amount', c.amount,
+                    'price', sp.price,
+                    'product_id', sp.id,
+                    'photo', sp.photos[1],
+                    'product_name', p.name,
+                    'unit', sp.unit
+                )) AS products
             FROM cart c
-            JOIN "seller_products" sp ON sp.id = c.seller_product_id
-            JOIN "products" p ON sp.product_id = p.id
-            JOIN "users" u ON u.id = sp.seller_id
-            WHERE c.customer_id = $1;
+            JOIN seller_products sp ON sp.id = c.seller_product_id
+            JOIN products p ON sp.product_id = p.id
+            JOIN users u ON u.id = sp.seller_id
+            WHERE c.customer_id = $1
+            GROUP BY u.name, u.avatar, sp.seller_id, c.created_at
+            ORDER BY c.created_at DESC
         "#
     )
         .bind(auth_session.user.unwrap().id)

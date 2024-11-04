@@ -1,0 +1,48 @@
+@use "../../../../colors";
+
+@mixin flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search_products_container {
+    width: 100%;
+    max-width: 451px;
+
+    margin: auto;
+
+    .result_type_selector {
+        @include flex();
+
+        p {
+            width: 50%;
+            
+            padding: 8px 0;
+            color: colors.$mid_1;
+            border-bottom: 1px solid colors.$light_1;
+
+            font-size: 1.2em;
+
+            text-align: center;
+
+            cursor: pointer;
+        }
+
+        p.selected {
+            color: colors.$group1_color_2;
+            border-bottom: 3px solid colors.$group1_color_2;
+            font-weight: 700;
+        }
+
+        margin: 0.8rem 0 1.2rem 0;
+    }
+}
+
+.noresult {
+    text-align: center;
+    color: scale-color($color: colors.$mid_1, $alpha: -60%);
+
+    font-weight: bold;
+    font-size: 1.05em;
+}

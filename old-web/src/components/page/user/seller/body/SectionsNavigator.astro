@@ -1,0 +1,64 @@
+---
+
+---
+
+<nav class="sections_nav">
+    <div id="products_selector" class="seller_sections_navigator" role="button" tabindex="0">
+        <p>Produtos</p>
+    </div>
+
+    <div id="agenda_selector" class="seller_sections_navigator" role="button" tabindex="0">
+        <p>Agenda</p>
+    </div>
+
+    <div id="ratings_selector" class="seller_sections_navigator" role="button" tabindex="0">
+        <p>Avaliações</p>
+    </div>
+</nav>
+
+<script>
+    const items = document.querySelectorAll<HTMLDivElement>(".sections_nav div")
+    
+    let current_focused_id: string
+
+    document.addEventListener("keypress", (key) => {
+        // @ts-ignore
+        if(key.key == "Enter") {
+            const activeElement = document.activeElement
+
+            console.log(activeElement)
+            if(activeElement.className === "seller_sections_navigator") {
+                const content = document.querySelector<HTMLDivElement>(`#${activeElement.id}_content`)
+                if(content) {
+                    if(current_focused_id) {
+                        document.querySelector<HTMLDivElement>(current_focused_id).hidden = true
+                    }
+
+                    content.hidden = false
+                    
+                    current_focused_id = content.id
+                }
+            }
+        }
+    })
+
+    function set_focused(id: string) {
+        const content = document.querySelector<HTMLDivElement>(`#${id}_content`)
+        
+        if(current_focused_id) {
+            document.querySelector<HTMLDivElement>(`#${current_focused_id}_content`).hidden = true
+        }
+        
+        if(content) {
+            content.hidden = false
+            
+            current_focused_id = id
+        }
+    }
+
+    for (const item of items) {
+        item.addEventListener("click", () => {
+            set_focused(item.id)
+        })
+    }
+</script>

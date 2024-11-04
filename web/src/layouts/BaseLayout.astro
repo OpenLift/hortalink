@@ -1,0 +1,47 @@
+---
+import "@styles/global.scss";
+
+import ClientNavbar from "@components/ClientNavbar.astro";
+
+interface Props {
+    no_nav?: boolean,
+    no_session_fetch?: boolean
+}
+
+const nonav = Astro.props?.no_nav
+const no_session_fetch = Astro.props?.no_session_fetch || false
+
+export const prerender = false
+---
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <slot name="head" />
+</head>
+<body>
+    <div id="site-container">
+        {
+            !nonav && <ClientNavbar />
+        }
+        <slot name="body">
+    </div>
+    <div id="should_not_fetch_session" data-nofetch={`${no_session_fetch}`}></div>
+    <script>
+        import Session from "@stores/Session";
+        import APIWrapper, { RequestAPIFrom } from "@HortalinkAPIWrapper";
+
+        const should_not_fetch_session = document.querySelector<HTMLDivElement>("#should_not_fetch_session").dataset.nofetch
+        console.log(should_not_fetch_session)
+    
+        if(should_not_fetch_session == "false") {
+            const wrapper = new APIWrapper(RequestAPIFrom.Client)
+
+            wrapper.getCurrentSession().then(data => {
+                Session.set(data)
+            }).catch(e => {
+                Session.set(undefined)
+            })
+        }
+    </script>
+</body>

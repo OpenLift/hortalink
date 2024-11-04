@@ -1,0 +1,44 @@
+---
+import "../../../../../../style/pages/home/client_home.scss";
+
+import Items from "../../../../home/client_home/Items";
+import ProductsWrap from "./ProductsWrap";
+
+import search_logo_raw from "../../../../../../assets/search.svg";
+import star from "../../../../../../assets/star.svg";
+import location from "../../../../../../assets/location.svg";
+import arrow from "../../../../../../assets/arrow.svg";
+
+import { getImage } from "astro:assets";
+
+const search_logo = await getImage({
+    src: search_logo_raw,
+    inferSize: true
+})
+
+const star_logo = await getImage({
+    src: star
+})
+
+const location_logo = await getImage({
+    src: location
+})
+
+const arrow_logo = await getImage({
+    src: arrow
+})
+
+const id = Astro.params.user_id
+---
+
+<section id="products_selector_content">
+    <Items
+        store="products"
+        star_image_src={star_logo.src}
+        location_image_src={location_logo.src}
+        arrow_image_src={arrow_logo.src}
+        container_id="seller_products"
+        client:load
+    />
+    <ProductsWrap client:only="react" seller_id={id} />
+</section>

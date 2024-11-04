@@ -1,13 +1,12 @@
 CREATE TABLE IF NOT EXISTS "notifications"
 (
-    id         SERIAL PRIMARY KEY,
+    id         BIGSERIAL PRIMARY KEY,
     user_id    INT REFERENCES "users" (id),
-    title      VARCHAR(64)  NOT NULL,
-    content    VARCHAR(256) NOT NULL,
-    created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "read"     BOOLEAN      NOT NULL DEFAULT FALSE,
-    type       SMALLINT     NOT NULL,
-    icon       VARCHAR(64)
+    title      VARCHAR(64) NOT NULL,
+    created_at TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "read"     BOOLEAN     NOT NULL DEFAULT FALSE,
+    type       SMALLINT    NOT NULL,
+    content    JSONB
 );
 
 CREATE INDEX user_notification ON "notifications" (user_id);

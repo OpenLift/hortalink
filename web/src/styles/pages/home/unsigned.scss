@@ -1,0 +1,50 @@
+@use "../../colors";
+
+.cta_buttons {
+    width: 100%;
+    max-width: 100%;
+
+    position: absolute;
+    bottom: 100px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    padding: 8px;
+
+    @mixin btn {
+        display: block;
+        
+        width: 353px;
+        max-width: 100%;
+
+        padding: 13px 8px;
+        border-radius: 8px;
+
+        text-decoration: none;
+        text-align: center;
+        font-size: 1.2em;
+        font-weight: 600;
+
+    }
+
+    .primary_btn {
+        @include btn;
+
+        background-color: colors.$group1_color_3;
+        color: colors.$lightest;
+    }
+
+    .btn {
+        @include btn;
+
+        background-color: transparent;
+        color: colors.$light_1;
+
+        border: 1px solid colors.$light_1;
+    }
+}

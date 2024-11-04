@@ -15,7 +15,7 @@ pub struct AmqpManager {
 impl AmqpManager {
     pub async fn new(settings: common::settings::services::RabbitMQ) -> Result<Self, Error> {
         let connection = Connection::open(
-            &OpenConnectionArguments::try_from(settings.url().as_str()).unwrap()
+            &OpenConnectionArguments::try_from(settings.protocol_url().as_str()).unwrap()
         )
             .await?;
         connection.register_callback(DefaultConnectionCallback).await?;

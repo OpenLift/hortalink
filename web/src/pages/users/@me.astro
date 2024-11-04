@@ -1,0 +1,25 @@
+---
+import "@styles/pages/users/@me.scss";
+
+import BaseLayout from "@layouts/BaseLayout.astro";
+import ProfileCard from "@components/pages/users/@me/ProfileCard";
+
+import Selector from "@components/pages/users/@me/Selector";
+import Orders from "@components/pages/users/@me/Orders";
+---
+
+<BaseLayout>
+    <Fragment slot="head">
+        <title>Hortalink | Meu perfil</title>
+    </Fragment>
+    <Fragment slot="body">
+        <header>
+            <div class="background" />
+            <ProfileCard client:only="react" />
+        </header>
+        <main>
+            <Selector client:load />
+            <Orders client:only="react" />
+        </main>
+    </Fragment>
+</BaseLayout>

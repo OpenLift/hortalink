@@ -1,0 +1,32 @@
+---
+import "@styles/pages/home/search/searchpage/searchpage.scss"
+
+import CommonTags from "./CommonTags.astro";
+import Menu from "./screens/Menu";
+import Results from "./screens/Results";
+import { Screen } from "./Search";
+
+// <Menu client:load />
+---
+
+<section class="searchpage_container">
+    <CommonTags />
+
+    <div class="screen" data-screen={Screen.Menu}>
+        <Menu client:load />
+    </div>
+    <div class="screen" data-screen={Screen.Results}>
+        <Results client:load />
+    </div>
+</section>
+
+<script>
+    import { screen, Screen } from "./Search";
+    const screens = document.querySelectorAll<HTMLDivElement>(".screen")
+
+    screen.listen(v => {
+        screens.forEach(screen => {
+            screen.hidden = !(v == (screen.dataset.screen as unknown) as Screen)
+        })
+    })
+</script>

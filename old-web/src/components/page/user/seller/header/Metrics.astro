@@ -1,0 +1,24 @@
+---
+interface Props {
+    products: number,
+    followers: number,
+    orders: number
+}
+
+const props = Astro.props
+---
+
+<div class="seller_metrics">
+    <div>
+        <p class="counter">{props.products}</p>
+        <p>Produtos</p>
+    </div>
+    <div>
+        <p class="counter">{props.followers}</p>
+        <p>Seguidores</p>
+    </div>
+    <div>
+        <p class="counter">{props.orders}</p>
+        <p>Pedidos</p>
+    </div>
+</div>

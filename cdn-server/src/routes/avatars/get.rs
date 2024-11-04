@@ -4,10 +4,11 @@ use axum::extract::{Path, Query};
 use axum::http::StatusCode;
 use axum::response::Response;
 
+use app_core::image::ImageManager;
+
 use crate::app::server::AppState;
 use crate::json::error::ApiError;
 use crate::json::query::ImageSizeQuery;
-use crate::utils::image::ImageManager;
 
 pub async fn user_avatar(
     Path((user_id, image)): Path<(i32, String)>,
@@ -43,7 +44,7 @@ pub async fn user_avatar(
                 "Content-Disposition",
                 format!("attachment; filename=\"{}\"", filename),
             )
-            .body(Body::from(ImageManager::new(path).get_image(query.size).await?))
+            .body(Body::from(ImageManager::new(path).get_image(query.size, extension).await?))
             .unwrap()
     )
 }

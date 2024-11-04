@@ -111,6 +111,8 @@ yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 
+pnpm-lock.yaml
+
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
@@ -182,6 +184,8 @@ web_modules/
 .env.test.local
 .env.production.local
 .env.local
+
+application.toml
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -276,9 +280,6 @@ Cargo.lock
 .history
 .ionide
 
-### Application settings
-application.toml
-
 ### Flutter ###
 # Flutter/Dart/Pub related
 **/doc/api/
@@ -342,3 +343,5 @@ lib/generated_plugin_registrant.dart
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+
+web/.astro

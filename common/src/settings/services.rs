@@ -1,10 +1,7 @@
+use crate::settings::Protocol;
 use std::env::var;
 
-use serde::{Deserialize, Serialize};
-
-use crate::settings::Protocol;
-
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Clone)]
 pub struct RabbitMQ {
     pub host: String,
     pub port: u16,
@@ -12,10 +9,11 @@ pub struct RabbitMQ {
     pub password: String,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Clone)]
 pub struct WebSocket {
     pub host: String,
     pub port: u16,
+    pub proxy: String,
 }
 
 impl Protocol for RabbitMQ {
@@ -23,8 +21,8 @@ impl Protocol for RabbitMQ {
         &self.host
     }
 
-    fn get_port(&self) -> &u16 {
-        &self.port
+    fn get_port(&self) -> u16 {
+        self.port
     }
 }
 
@@ -33,34 +31,41 @@ impl Protocol for WebSocket {
         &self.host
     }
 
-    fn get_port(&self) -> &u16 {
-        &self.port
+    fn get_port(&self) -> u16 {
+        self.port
+    }
+
+    fn get_proxy(&self) -> String {
+        self.proxy.clone()
     }
 }
 
-impl Default for RabbitMQ {
-    fn default() -> Self {
+impl RabbitMQ {
+    pub fn new() -> Self {
         Self {
             host: var("RABBITMQ_HOST")
-                .unwrap_or("localhost".to_string()),
+                .unwrap(),
             port: var("RABBITMQ_PORT")
-                .unwrap_or("5672".to_string())
+                .unwrap()
                 .parse().unwrap(),
             username: var("RABBITMQ_USER")
-                .unwrap_or("rabbit".to_string()),
+                .unwrap(),
             password: var("RABBITMQ_PASSWORD")
-                .unwrap_or(String::new()),
+                .unwrap(),
         }
     }
 }
 
-impl Default for WebSocket {
-    fn default() -> Self {
+impl WebSocket {
+    pub fn new() -> Self {
         Self {
             host: var("WEBSOCKET_HOST")
-                .unwrap_or("localhost".to_string()),
+                .unwrap(),
             port: var("WEBSOCKET_PORT")
                 .unwrap_or("9002".to_string())
+                .parse().unwrap(),
+            proxy: var("WEBSOCKET_PROXY")
+                .unwrap()
                 .parse().unwrap(),
         }
     }

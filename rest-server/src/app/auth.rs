@@ -1,11 +1,11 @@
-use std::collections::HashSet;
+use crate::json::auth::Credentials;
+use crate::json::error::ApiError;
+use crate::models::users::LoginUser;
 use axum::async_trait;
 use axum_login::{AuthnBackend, AuthzBackend, UserId};
 use password_auth::verify_password;
 use sqlx::{Pool, Postgres};
-use crate::json::auth::Credentials;
-use crate::json::error::ApiError;
-use crate::models::users::LoginUser;
+use std::collections::HashSet;
 
 #[derive(Clone)]
 pub struct AuthGate {
@@ -38,19 +38,16 @@ impl AuthnBackend for AuthGate {
                 )
                     .bind(creds.email)
                     .fetch_optional(&self.db)
-                    .await?;
+                    .await?
+                    .ok_or(ApiError::NotFound("Usuário não cadastrado no banco de dados".to_string()))?;
 
-                let user = user.filter(|user| {
-                    let Some(user_password) = &user.password else {
-                        return false;
-                    };
-
+                if let Some(user_password) = &user.password {
                     verify_password(creds.password, user_password)
                         .ok()
-                        .is_some()
-                });
+                        .ok_or(ApiError::Unauthorized("Senhas não coincidem".to_string()))?;
+                }
 
-                Ok(user)
+                Ok(Some(user))
             }
             Credentials::OAuth(creds) => {
                 let user = sqlx::query_as(
@@ -86,9 +83,10 @@ impl AuthnBackend for AuthGate {
         )
             .bind(user_id)
             .fetch_optional(&self.db)
-            .await?;
+            .await?
+            .ok_or(ApiError::NotFound("Usuário não cadastrado no banco de dados".to_string()))?;
 
-        Ok(user)
+        Ok(Some(user))
     }
 }
 
@@ -98,7 +96,7 @@ impl AuthzBackend for AuthGate {
 
     async fn get_user_permissions(
         &self,
-        user: &Self::User
+        user: &Self::User,
     ) -> Result<HashSet<Self::Permission>, Self::Error> {
         let permissions = HashSet::from_iter(user.roles.clone());
 

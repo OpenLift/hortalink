@@ -1,0 +1,191 @@
+@use "../colors";
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    max-width: 400px;
+    width: 100%;
+    
+    margin: auto;
+    margin-top: 15vh;
+
+    padding: 15px;
+
+    img {
+        display: block;
+
+        margin: auto;
+        margin-bottom: 18px;
+
+        border-radius: 50%;
+
+        max-width: 100%;
+        height: auto;
+    }
+
+    input[type=text], input[type=password] {
+        display: block;
+
+        max-width: 700px;
+        width: 100%;
+
+        padding: 9px;
+        border-radius: 8px;
+    
+        background-color: colors.$secondary-light;
+        margin: auto;
+
+        transition-duration: 250ms;
+
+        &:focus {
+            outline: 1px solid colors.$dark;
+            padding: 10px;
+        }
+    }
+
+    label {
+        display: block;
+        width: fit-content;
+        margin-left: 5px;
+
+        transform: translateY(25%);
+        font-size: 0.85em;
+    }
+
+    .notransform {
+        display: block;
+        transform: none;
+    }
+
+    .radio-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: row;
+
+        padding: 5px;
+
+        gap: 13px;
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: row;
+
+            font-size: 1.2em;
+
+            box-shadow: 0px 0px 1px 0px colors.$dark;
+            border-radius: 8px;
+
+            flex: 1 1 0;
+
+            gap: 2px;
+            padding: 8px;
+        }
+    }
+
+    button[type=submit] {
+        display: block;
+        width: 100%;
+        
+        text-align: center;
+        font-size: 1em;
+
+        background-color: colors.$primary;
+        color: colors.$light;
+
+        padding: 9px;
+        border-radius: 8px;
+
+        margin-top: 18px;
+
+        cursor: pointer;
+    }
+}
+
+.alt-text {
+    font-size: 1.3em;
+    color: rgb(185, 184, 184);
+    text-align: center;
+
+    margin-top: 18px;
+    margin-bottom: 22px;
+}
+
+.signin-options {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+
+    max-width: 600px;
+    margin: auto;
+
+    gap: 10px;
+    padding: 8px;
+
+    button {
+        display: block;
+        
+        background-color: colors.$secondary-light;
+        color: colors.$dark;
+
+        max-width: 100%;
+        width: fit-content;
+        flex: 1 1 0;
+
+        border-radius: 8px;
+        padding: 10px 25px;
+
+        text-align: center;
+        cursor: pointer;
+
+        img {
+            display: block;
+            
+            max-width: 100%;
+            height: auto;
+            
+            margin: auto;
+            margin-bottom: 8px;
+        }
+
+        p {
+            font-size: 1em;
+        }
+    }
+}
+
+#loading-session {
+    display: block;
+    width: fit-content;
+    
+    margin: auto;
+    margin-top: 18vh;
+
+    .loader {
+        border: 6px solid colors.$secondary-light;
+        border-top: 6px solid colors.$secondary;
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        animation: spin 1s linear infinite;
+
+        margin: auto;
+        margin-bottom: 1rem;
+    }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }      
+}
+
+#file-input {
+    display: block;
+    margin: auto;
+}

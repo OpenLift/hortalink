@@ -6,3 +6,4 @@ pub mod customers;
 pub mod products;
 pub mod ratings;
 pub mod cart;
+pub mod chats;

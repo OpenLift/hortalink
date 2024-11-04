@@ -24,7 +24,7 @@ pub async fn schedule(
     sqlx::query_scalar::<_, i32>(
         r#"
             INSERT INTO schedules (geolocation, address, start_time, end_time, day_of_week, seller_id)
-            VALUES (ST_SetSRID(ST_MakePoint($1, $2), 4326), $3, $4, $5, $6, $7)
+            VALUES (ST_SetSRID(ST_MakePoint($1, $2), 4674), $3, $4, $5, $6, $7)
             RETURNING id
         "#
     )

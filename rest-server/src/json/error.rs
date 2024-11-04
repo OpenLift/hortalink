@@ -1,6 +1,8 @@
+use axum::extract::multipart::MultipartError;
 use axum::http::StatusCode;
 use axum::Json;
 use axum::response::{IntoResponse, Response};
+use image::ImageError;
 use serde::{Serialize, Serializer};
 use crate::app::auth::AuthGate;
 
@@ -39,6 +41,7 @@ impl IntoResponse for ApiError {
 
 impl From<sqlx::Error> for ApiError {
     fn from(value: sqlx::Error) -> Self {
+        log::error!("Database error: {value}");
         ApiError::Database(format!("Falha no banco de dados: {}", value))
     }
 }
@@ -46,6 +49,24 @@ impl From<sqlx::Error> for ApiError {
 impl From<axum_login::Error<AuthGate>> for ApiError {
     fn from(value: axum_login::Error<AuthGate>) -> Self {
         ApiError::Database(format!("Falha no banco de dados: {}", value))
+    }
+}
+
+impl From<axum_login::tower_sessions::session::Error> for ApiError {
+    fn from(value: axum_login::tower_sessions::session::Error) -> Self {
+        ApiError::Custom(StatusCode::INTERNAL_SERVER_ERROR, format!("{:?}", value))
+    }
+}
+
+impl From<ImageError> for ApiError {
+    fn from(value: ImageError) -> Self {
+        ApiError::Custom(StatusCode::INTERNAL_SERVER_ERROR, value.to_string())
+    }
+}
+
+impl From<MultipartError> for ApiError {
+    fn from(value: MultipartError) -> Self {
+        ApiError::Custom(value.status(), value.body_text())
     }
 }
 

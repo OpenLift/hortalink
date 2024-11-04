@@ -1,0 +1,23 @@
+@use "../../../../colors";
+@use "common";
+
+.common_tags {
+    @include common.flexCenter();
+    gap: 0.5rem;
+
+    width: fit-content;
+    max-width: 100%;
+
+    margin: auto;
+
+    .tag {
+        text-align: center;
+        padding: 5px 7px;
+        border-radius: 9px;
+
+        background-color: adjust-color(colors.$light_1, $alpha: -0.7);
+        color: adjust-color($color: colors.$mid_1, $alpha: -0.3);
+
+        font-weight: 600;
+    }
+}

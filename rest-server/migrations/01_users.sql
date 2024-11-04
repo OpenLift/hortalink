@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS "users"
     password     TEXT,
     roles        SMALLINT[]   NOT NULL,
     phone        CHAR(11),
-    access_token VARCHAR(64)
+    access_token TEXT
 );
 
 CREATE INDEX user_email ON "users" (email);

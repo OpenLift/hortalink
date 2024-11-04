@@ -5,7 +5,8 @@
       "email": "john.doe@gmail.com",
       "name": "John Doe",
       "avatar": null,
-      "phone": "63983424568"
+      "phone": "63983424568",
+      "roles": [2]
     },
     "infos": [
       {
@@ -19,7 +20,8 @@
       "email": "jane.smith@hotmail.com",
       "name": "Jane Smith",
       "avatar": null,
-      "phone": "63983524568"
+      "phone": "63983524568",
+      "roles": [1, 3]
     },
     "infos": []
   },
@@ -29,7 +31,8 @@
       "email": "bob.johnson@outlook.com",
       "name": "Bob Johnson",
       "avatar": null,
-      "phone": "63983424598"
+      "phone": "63983424598",
+      "roles": [4]
     },
     "infos": [
       {
@@ -43,7 +46,8 @@
       "email": "alice.williams@yahoo.com",
       "name": "Alice Williams",
       "avatar": null,
-      "phone": "63943424568"
+      "phone": "63943424568",
+      "roles": [4]
     },
     "infos": [
       {
@@ -57,7 +61,8 @@
       "email": "charlie.brown@hotmail.com",
       "name": "Charlie Brown",
       "avatar": null,
-      "phone": "63987424568"
+      "phone": "63987424568",
+      "roles": [4]
     },
     "infos": [
       {
@@ -71,7 +76,8 @@
       "email": "diana.prince@aol.com",
       "name": "Diana Prince",
       "avatar": null,
-      "phone": "63983429568"
+      "phone": "63983429568",
+      "roles": [1, 3]
     },
     "infos": []
   },
@@ -81,7 +87,8 @@
       "email": "harry.potter@gmail.com",
       "name": "Harry Potter",
       "avatar": null,
-      "phone": "63983424568"
+      "phone": "63983424568",
+      "roles": [3]
     },
     "infos": []
   },
@@ -91,7 +98,8 @@
       "email": "sherlock.holmes@proton.me",
       "name": "Sherlock Holmes",
       "avatar": null,
-      "phone": "63986524568"
+      "phone": "63986524568",
+      "roles": [1, 4]
     },
     "infos": [
       {
@@ -105,7 +113,8 @@
       "email": "elizabeth.bennet@gmail.com",
       "name": "Elizabeth Bennet",
       "avatar": null,
-      "phone": "63983624568"
+      "phone": "63983624568",
+      "roles": [4]
     },
     "infos": [
       {
@@ -119,7 +128,8 @@
       "email": "frodo.baggins@icloud.com",
       "name": "Frodo Baggins",
       "avatar": null,
-      "phone": "63983424068"
+      "phone": "63983424068",
+      "roles": [3]
     },
     "infos": []
   }

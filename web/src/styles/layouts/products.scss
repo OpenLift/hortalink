@@ -1,0 +1,158 @@
+@use "../colors";
+
+@mixin flex() {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.products {
+    @include flex();
+
+    flex-wrap: wrap;
+
+    .product {
+        display: block;
+
+        color: colors.$dark_1;
+        text-decoration: none;
+
+        width: 138px;
+        padding: 18px;
+
+        .product_header {
+            display: grid;
+            grid-template-columns: 50% 60%;
+            align-items: center;
+
+            h2 {
+                font-size: 1em;
+                text-transform: capitalize;
+            }
+
+            .star {
+                justify-self: end;
+
+                .star_content {
+                    @include flex();
+                
+                    gap: 0.1rem;
+                    
+                    justify-self: end;
+    
+                    div {
+                        font-size: 0.8em;
+                    }
+                }
+            }
+
+            margin-bottom: 0.3rem;
+        }
+
+        .product_image {
+            width: 109px;
+            height: 106px;
+
+            margin: auto;
+
+            img {
+                border-radius: 3.33px;
+                object-fit: cover;
+            }
+        }
+
+        .product_footer {
+            display: grid;
+            grid-template-columns: 40% 70%;
+            align-items: center;
+
+            margin-top: 0.35rem;
+
+            p {
+                font-size: 0.6em;
+                font-weight: 600
+            }
+
+            .distance {
+                @include flex();
+                gap: 0.1rem;
+            }
+
+            .price {
+                justify-self: end;
+                color: colors.$group1_color_2;
+            }
+
+            .label {
+                color: colors.$mid_1;
+            }
+        }
+    }
+}
+
+.products_column {
+    @include flex();
+    flex-direction: column;
+
+    gap: 0.8rem;
+
+    .product {
+        @include flex();
+        align-items: normal;
+        gap: 0.8rem;
+
+        color: colors.$dark_1;
+        text-decoration: none;
+
+        width: 100%;
+        max-width: 400px;
+
+        img {
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .product_data {
+            h2 {
+                font-size: 1.05em;
+                text-transform: capitalize;
+            }
+
+            p {
+                font-size: 0.85em;
+            }
+
+            .star {
+                @include flex();
+                justify-content: start;
+                gap: 0.2rem;
+
+                margin-top: 0.4rem;
+
+                div {
+                    font-size: 0.8em;
+                    color: #7F8488;
+
+                    font-weight: 600;
+                }
+            }
+
+            .price {
+                color: colors.$group1_color_3;
+                font-size: 0.9em;
+                font-weight: 800;
+
+                margin-top: 0.3rem;
+            }
+        }
+
+        .seller_name {
+            font-size: 0.8em;
+            justify-self: end;
+
+            .name {
+                text-transform: capitalize;
+            }
+        }
+    }
+}

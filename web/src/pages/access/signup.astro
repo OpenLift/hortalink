@@ -1,0 +1,40 @@
+---
+import "@styles/pages/sign/form.scss";
+
+import BaseLayout from "@layouts/BaseLayout.astro";
+import SignUpFirstForm from "@components/pages/sign/SignUpFirstForm.astro";
+import SignUpSecondForm from "@components/pages/sign/SignUpSecondForm.astro";
+
+import { Image } from "astro:assets";
+---
+
+<BaseLayout no_nav={true}>
+    <Fragment slot="head">
+        <title>Hortalink | Login</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css"
+        integrity="sha512-0SPWAwpC/17yYyZ/4HSllgaK7/gg9OlVozq8K7rf3J8LvCjYEEIfzzpnA2/SSjpGIunCSD18r3UhvDcu/xncWA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    </Fragment>
+    <Fragment slot="body">
+        <span id="part-1">
+            <SignUpFirstForm />
+        </span>
+        <span id="part-2" hidden>
+            <SignUpSecondForm />
+        </span>
+
+        <script>
+            // bundled by astro
+            import Sign from "@stores/pages/Sign";
+            import { SignUpFormView } from "@stores/pages/Sign";
+
+            const part1 = document.querySelector<HTMLSpanElement>("#part-1")
+            const part2 = document.querySelector<HTMLSpanElement>("#part-2")
+
+            Sign.SignUpFormView.listen(v => {
+                part1.hidden = !(v === SignUpFormView.Credentials)
+                part2.hidden = !(v === SignUpFormView.Profile)
+            })
+        </script>
+    </Fragment>
+</BaseLayout>

@@ -12,10 +12,11 @@ use crate::app::auth::AuthGate;
 pub fn router() -> Router {
     Router::new()
         .route("/", post(post::product))
-        .route("/:cart_product_id", delete(delete::product)
+        .route("/:order_id", delete(delete::product)
             .patch(patch::product)
         )
-        .route("/:cart_product_id/reserve", patch(patch::reserve_product))
+        .route("/:order_id/reserve", patch(patch::reserve_product))
         .route_layer(permission_required!(AuthGate, UserRole::Customer, UserRole::Verified))
         .route("/", get(get::products))
+        .route_layer(permission_required!(AuthGate, UserRole::Customer))
 }

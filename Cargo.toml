@@ -14,18 +14,19 @@ edition = "2021"
 
 [workspace.dependencies]
 axum = { version = "0.7.5", default-features = false, features = ["http2", "tokio"] }
-sqlx = { version = "0.7.4", default-features = false, features = ["runtime-tokio", "postgres"] }
+sqlx = { version = "0.8.0", default-features = false, features = ["runtime-tokio", "postgres"] }
 tokio = { version = "1.37.0", default-features = false, features = ["rt", "rt-multi-thread", "macros"] }
-tower-sessions-sqlx-store = { version = "0.12.0", default-features = false, features = ["postgres"] }
+tower-sessions-sqlx-store = { version = "0.13.0", default-features = false, features = ["postgres"] }
 serde = { version = "1.0.197", default-features = false, features = ["derive"] }
 tower-http = { version = "0.5.2", default-features = false, features = ["cors"] }
 amqprs = { version = "1.5.4", default-features = false }
-axum_garde = { version = "0.18.0", default-features = false }
-garde = { version = "0.18.0", default-features = false, features = ["derive"] }
+axum_garde = { version = "0.20.0", default-features = false }
+garde = { version = "0.20.0", default-features = false, features = ["derive"] }
 log = { version = "0.4.21" }
 env_logger = { version = "0.11.3" }
 serde_json = { version = "1.0.115" }
 serde_repr = { version = "0.1.18" }
 axum-login = { version = "0.15.0" }
+dotenv = { version = "0.15.0" }
 
-axum-test = { version = "14.8.0", default-features = false, features = ["pretty-assertions"] }
+axum-test = { version = "15.3.1", default-features = false, features = ["pretty-assertions"] }

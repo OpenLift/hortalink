@@ -1,0 +1,17 @@
+---
+import "../../../style/pages/users/store/store.scss";
+
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import StoreComponent from "../../../components/page/user/store/Store.astro";
+
+export const prerender = false
+---
+
+<BaseLayout page="store">
+    <Fragment slot="head">
+        <title>Vendedor - loja</title>
+    </Fragment>
+    <Fragment slot="body">
+        <StoreComponent />
+    </Fragment>
+</BaseLayout>

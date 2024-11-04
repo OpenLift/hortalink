@@ -1,0 +1,49 @@
+---
+import { getImage } from "astro:assets";
+import { Image } from "astro:assets";
+import type { Product } from '../../../../../interfaces/Product';
+import arrow from "../../../../../assets/white_arrow.svg";
+import weight from "../../../../../assets/weight.svg";
+import star from "../../../../../assets/star.svg";
+
+// @ts-ignore
+import Gallery from "./Gallery";
+import QuantitySwitcher from "./QuantitySwitcher";
+
+const arrow_img = await getImage({
+    src: arrow,
+    inferSize: true
+})
+
+interface Props {
+    product: Product
+}
+
+const product = Astro.props.product
+---
+
+<header>
+    <Gallery photos={product.product.photos} product_id={product.product.id} arrow_image_src={arrow_img.src} client:load />
+    <section class="product_infos">
+        <div class="infos">
+            <h1>{product.product.product.name}</h1>
+            <div class="weight">
+                <Image src={weight} width={10} height={16} alt="Imagem de um peso, representando o peso da unidade."/>
+                <p>{product.product.unit_quantity} {product.product.unit}</p>
+            </div>
+            <p class="price">R$ {product.product.price}</p>
+        </div>
+        <div class="meta">
+            <a class="rating" href={`${product.product.id}/ratings`}>
+                <Image
+                    src={star} width={16} height={16} alt="Imagem de uma estrela ilustrando as avaliações"
+                />
+                <p>{product.product.rating} ({product.product.rating_quantity})</p>
+            </a>
+            <QuantitySwitcher
+                client:load
+            />
+        </div>
+    </section>
+    <div class="line" />
+</header>

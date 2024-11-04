@@ -1,0 +1,16 @@
+---
+import Seller from "../components/navbar/Seller.astro";
+import Customer from "../components/navbar/Customer.astro";
+
+interface Props {
+    type: string // seller, client
+    page?: string
+}
+
+const type = Astro.props.type
+const page = Astro.props.page
+---
+
+{
+    type === "seller" ? <Seller page={page} /> : <Customer page={page} />
+}

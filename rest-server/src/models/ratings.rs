@@ -1,21 +1,34 @@
 use serde::Serialize;
 use sqlx::{Pool, Postgres};
 use sqlx::types::chrono::NaiveDateTime;
-use crate::json::error::ApiError;
 
+use crate::json::error::ApiError;
 use crate::json::serialize_timestamp;
+use crate::models::products::SellerProductMinimal;
 use crate::models::users::PreviewUser;
 
 #[derive(Serialize, sqlx::FromRow)]
 pub struct ProductRatingInfo {
-    id: i32,
+    id: i64,
     #[serde(serialize_with = "serialize_timestamp")]
     created_at: NaiveDateTime,
     was_edited: bool,
     rating: i16,
     content: String,
     #[sqlx(flatten)]
-    user: PreviewUser
+    user: PreviewUser,
+}
+
+#[derive(Serialize, sqlx::FromRow)]
+pub struct CustomerRating {
+    id: i64,
+    #[serde(serialize_with = "serialize_timestamp")]
+    created_at: NaiveDateTime,
+    was_edited: bool,
+    rating: i16,
+    content: String,
+    #[sqlx(flatten)]
+    product: SellerProductMinimal,
 }
 
 impl ProductRatingInfo {

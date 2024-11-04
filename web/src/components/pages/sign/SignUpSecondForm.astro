@@ -1,0 +1,144 @@
+---
+import { Image } from "astro:assets";
+import ImageCropper from "./ImageCropper";
+---
+
+<section class="form">
+    <form id="second_form">
+        <div class="profile">
+            <img 
+                src="/assets/hortalink.jpg"
+                width="140"
+                height="140"
+                alt="Foto de perfil do usuário"
+                id="user_profile_img"
+            />
+        </div>
+        
+        <img 
+            src="/assets/pencil.svg"
+            width="24"
+            height="24"
+            alt="ícone de uma caneta, clique para cortar e redimensionar sua foto."
+            class="pencil_img"
+            id="crop_image"
+        />
+
+        <p class="tiny_text" id="add_img" style="margin-top: 0; cursor: pointer;" tabindex="0">Adicionar nova imagem</p>
+        <input id="file_input" style="display:none; margin: auto;" type="file" accept="image/jpeg, image/png" name="file_input" />
+        
+        <input type="text" name="name" id="username" placeholder="Digite seu nome" />
+
+        <div class="account_type_label">
+            <p class="tiny_text" style="font-size: 1.1em; width: fit-content; max-width: 100%;">Eu sou</p>
+            <div class="quot_question" />
+        </div>
+
+        <div class="radios">
+            <div class="radio">
+                <input type="radio" id="client" name="role" value="3" />
+                <label for="radio">Cliente</label>
+            </div>
+
+            <div class="radio">
+                <input type="radio" id="seller" name="role" value="4" />
+                <label for="seller">Vendedor</label>
+            </div>
+        </div>
+
+        <button type="submit">
+            Cadastrar
+        </button>
+    </form>
+</section>
+<ImageCropper client:only="react"/>
+
+<script>
+    import Sign from "@stores/pages/Sign";
+
+    const crop = document.querySelector<HTMLImageElement>("#crop_image")
+    const fileinput = document.querySelector<HTMLInputElement>("#file_input")
+    const addfile = document.querySelector<HTMLParagraphElement>("#add_img")
+
+    const original_profile_img = document.querySelector<HTMLImageElement>("#user_profile_img")
+
+    crop.addEventListener("click", () => {
+        Sign.SignUpCropperOpen.set(true)
+    })
+
+    addfile.addEventListener("click", () => {
+        fileinput.click()
+    })
+
+    fileinput.addEventListener("change", async (e) => {
+        const img = fileinput.files[0] // sempre o primeiro arquivo.
+        
+        const reader = new FileReader()
+
+        reader.addEventListener("load", () => {
+            original_profile_img.src = reader.result as string
+        })
+
+        reader.readAsDataURL(img)
+    })  
+</script>
+
+<script>
+    const first_form = document.querySelector<HTMLFormElement>("#first_form")
+    const second_form = document.querySelector<HTMLFormElement>("#second_form")
+    const original_profile_img = document.querySelector<HTMLImageElement>("#user_profile_img")
+
+    second_form.addEventListener("submit", async (e) => {
+        e.preventDefault()
+
+        const first_formdata = new FormData(first_form)
+        const second_formdata = new FormData(second_form)
+
+        const resultant_formdata = new FormData()
+
+        const email = first_formdata.get("email")
+        const password = first_formdata.get("password")
+
+        const name = second_formdata.get("name")
+        const role = second_formdata.get("role")
+
+        resultant_formdata.append("email", email)
+        if(password) {
+            resultant_formdata.append("password", password)
+        }
+
+        resultant_formdata.append("name", name)
+        resultant_formdata.append("role", role)
+
+        await readImage(original_profile_img.src, resultant_formdata)
+
+        fetch("/api/v1/auth/sign-in", {
+            method: "POST",
+            body: resultant_formdata,
+            credentials: "include",
+        }).then(async (request) => {
+            const ok = request.ok
+            if (ok) {
+                console.log("conta criada!")
+            } else {
+                alert("Erro ao logar.")
+            }
+        })
+    })
+
+    function readImage(src: string, form: FormData) {
+        return new Promise(async (resolve, reject) => {
+            const reader = new FileReader()
+
+            const request = await fetch(src)
+            const blob = await request.blob()
+
+            reader.onload = (e) => {
+                form.append("image", blob, "profile.jpg")
+                resolve(true)
+            }
+
+            reader.readAsDataURL(blob)
+        })
+    }
+</script>

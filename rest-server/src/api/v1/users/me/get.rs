@@ -1,60 +1,49 @@
 use axum::{Extension, Json};
-
+use crate::api::v1::customers::orders::get::fetch_orders;
+use crate::api::v1::sellers::ratings::get::fetch_reviews;
 use crate::app::auth::AuthSession;
 use crate::app::server::AppState;
 use crate::json::error::ApiError;
-use crate::json::users::{UserMeResponse, UserType};
-use crate::models::sellers::SellerUser;
-use crate::models::users::{ProtectedUser, ViewerUser};
+use crate::json::users::UserResponse;
+use crate::json::utils::Pagination;
+use crate::models::sellers::PublicProfile;
 
 pub async fn me(
     Extension(state): Extension<AppState>,
     auth_session: AuthSession,
-) -> Result<Json<UserMeResponse>, ApiError> {
+) -> Result<Json<UserResponse>, ApiError> {
     let login_user = auth_session.user.unwrap();
-    let mut tx = state.pool.begin().await?;
 
-    let protected_user = sqlx::query_as::<_, ProtectedUser>(
-        r#"
-            SELECT id, name, avatar, phone, email
-            FROM users
-            WHERE id = $1
-        "#
-    )
-        .bind(login_user.id)
-        .fetch_one(&mut *tx)
+    let profile = PublicProfile::fetch(login_user.id, &state.pool)
         .await?;
 
-    let mut infos = Vec::<UserType>::new();
-    for role in login_user.roles {
-        if role == 2 {
-            let user = sqlx::query_as::<_, ViewerUser>(
-                r#"
-                    SELECT end_time FROM blacklist
-                    WHERE user_id = $1
-                "#
-            )
-                .bind(login_user.id)
-                .fetch_one(&mut *tx)
-                .await?;
-
-            infos.push(UserType::Viewer(user))
-        } else if role == 4 {
-            let user = sqlx::query_as::<_, SellerUser>(
-                r#"
-                    SELECT bio FROM sellers
-                    WHERE user_id = $1
-                "#
-            )
-                .bind(login_user.id)
-                .fetch_one(&mut *tx)
-                .await?;
-
-            infos.push(UserType::Seller(user))
-        }
+    if profile.is_seller {
+        Ok(
+            Json(UserResponse {
+                profile,
+                orders: None,
+                reviews: Some(fetch_reviews(
+                    login_user.id, 
+                    Pagination { page: 1, per_page: 15 }, 
+                    &state.pool
+                ).await?),
+                customer_reviews: None,
+                products: None,
+            })
+        )
+    } else {
+        Ok(
+            Json(UserResponse {
+                profile,
+                orders: Some(fetch_orders(
+                    login_user.id, 
+                    Pagination { page: 1, per_page: 15 }, 
+                    &state.pool
+                ).await?),
+                reviews: None,
+                customer_reviews: None,
+                products: None,
+            })
+        )
     }
-
-    tx.commit().await?;
-
-    Ok(Json(UserMeResponse { user: protected_user, infos }))
 }

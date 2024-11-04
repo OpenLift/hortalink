@@ -1,9 +1,11 @@
 use std::collections::HashMap;
-use serde::{Deserialize};
-use time::OffsetDateTime;
+
+use serde::Deserialize;
+use sqlx::types::time::OffsetDateTime;
 
 #[derive(Deserialize)]
 pub struct Id(pub i128);
+
 #[derive(Deserialize)]
 pub struct Record {
     pub id: Id,

@@ -1,0 +1,45 @@
+---
+import "../../../../../style/pages/users/products/ratings.scss";
+
+import BaseLayout from "../../../../../layouts/BaseLayout.astro";
+import RatingsList from "../../../../../components/page/user/products/ratings/RatingsList.astro";
+
+const { user_id, product_id } = Astro.params
+---
+
+<BaseLayout page="user">
+    <Fragment slot="head">
+        <title>Avaliações do produto</title>
+    </Fragment>
+    <Fragment slot="body">
+        <load-all-data data-message={JSON.stringify({ user_id, product_id })} />
+        <RatingsList />
+        <script>
+            import get_product_ratings from "../../../../../api/get_product_ratings";
+            import get_product from "../../../../../api/get_product";
+
+            import Products from "../../../../../stores/Products";
+
+            class DataLoader extends HTMLElement {
+                constructor() {
+                    super()
+
+                    document.addEventListener("DOMContentLoaded", async () => {
+                        const { user_id, product_id } = JSON.parse(this.dataset.message)
+
+                        const ratings_content = await get_product_ratings(Number(user_id), Number(product_id), { page: 1, per_page: 10 })
+                        const product = await get_product(Number(user_id), Number(product_id))
+
+                        console.log(ratings_content, "A")
+
+                        Products.current_product.set(product)
+                        Products.current_product_ratings.set(ratings_content)
+                    })
+                }
+            }
+
+            customElements.define("load-all-data", DataLoader)
+
+        </script>
+    </Fragment>
+</BaseLayout>

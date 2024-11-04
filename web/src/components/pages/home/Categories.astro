@@ -1,0 +1,46 @@
+---
+//${import.meta.env.PUBLIC_FRONTEND_CDN_URL}/resources/products/alface.jpg?size=256
+import "@styles/pages/home/categories.scss";
+---
+
+<div class="categories_title">
+    <h1>Categorias</h1>
+</div>
+<section class="categories">
+    <div class="category">
+        <div class="image">
+            <img
+                src={`${import.meta.env.PUBLIC_FRONTEND_CDN_URL}/resources/products/cebola.jpg?size=256`}
+                width={110}
+                height={110}
+                alt="Imagem de um alface representando a categoria folhas."
+                loading="lazy"
+            />
+        </div>
+        <p>Raízes</p>
+    </div>
+    <div class="category">
+        <div class="image">
+            <img
+                src={`${import.meta.env.PUBLIC_FRONTEND_CDN_URL}/resources/products/tomate.jpg?size=256`}
+                width={110}
+                height={110}
+                alt="Imagem de um alface representando a categoria folhas."
+                loading="lazy"
+            />
+        </div>
+        <p>Frutas</p>
+    </div>
+    <div class="category">
+        <div class="image">
+            <img
+                src={`${import.meta.env.PUBLIC_FRONTEND_CDN_URL}/resources/products/alface.jpg?size=256`}
+                width={110}
+                height={110}
+                alt="Imagem de um alface representando a categoria folhas."
+                loading="lazy"
+            />
+        </div>
+        <p>Folhas</p>
+    </div>
+</section>

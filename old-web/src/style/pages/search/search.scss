@@ -1,0 +1,71 @@
+@use "../../colors";
+
+.search_bar {
+    display: flex;
+    align-items: center stretch;
+    width: fit-content;
+
+    height: 45px;
+
+    margin: auto;
+    margin-top: .8rem;
+
+    input[type=text] {
+        display: block;
+        
+        padding: 15px 6px;
+        width: 305px;
+        border-radius: 13px 0px 0px 15px;
+
+        background-color: colors.$secondary-light;
+
+        &:focus {
+            outline: 1px solid rgba(0, 0, 0, 0.307);
+        }
+    }
+
+    .icon_box {
+        display: flex;
+        height: 45px;
+
+        align-items: center;
+
+        border-radius: 0px 15px 15px 0px;
+        background-color: colors.$secondary-light;
+
+        text-align: center;
+        
+    }
+}
+
+.select_result_container {
+    display: block;
+    position: absolute;
+
+    width: 100%;
+    max-width: 310px;
+
+    left: 50%;
+    transform: translateX(-50%) translateY(2px);
+
+    .result {
+        background-color: colors.$light;
+        padding: 15px;
+
+        border-radius: 9px;
+
+        &:hover {
+            background-color: darken(colors.$light, 15);
+        }
+
+        cursor: pointer;
+    }
+}
+
+.line {
+    width: 85%;
+    height: 1px;
+    margin: 1rem auto 1rem auto;
+
+    background-color: rgba(175, 175, 175, 0.45);
+}

@@ -11,6 +11,7 @@ pub struct ProtectedUser {
     name: String,
     avatar: Option<String>,
     phone: Option<String>,
+    roles: Option<Vec<i16>>,
 }
 
 #[derive(sqlx::FromRow, Serialize)]

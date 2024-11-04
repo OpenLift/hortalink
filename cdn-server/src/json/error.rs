@@ -5,8 +5,6 @@ use axum::response::{IntoResponse, Response};
 use image::ImageError;
 use serde::{Serialize, Serializer};
 
-use crate::app::auth::AuthGate;
-
 #[derive(Debug, thiserror::Error, Serialize)]
 pub enum ApiError {
     #[error("Database")]
@@ -37,18 +35,6 @@ impl IntoResponse for ApiError {
         };
 
         (status, Json(self)).into_response()
-    }
-}
-
-impl From<sqlx::Error> for ApiError {
-    fn from(value: sqlx::Error) -> Self {
-        ApiError::Database(format!("Falha no banco de dados: {}", value))
-    }
-}
-
-impl From<axum_login::Error<AuthGate>> for ApiError {
-    fn from(value: axum_login::Error<AuthGate>) -> Self {
-        ApiError::Database(format!("Falha no banco de dados: {}", value))
     }
 }
 

@@ -1,0 +1,56 @@
+---
+import "@styles/pages/home/unsigned.scss";
+
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+import Unsigned from "@components/pages/home/Unsigned.astro";
+import CustomerHome from "@components/pages/home/CustomerHome.astro";
+import APIWrapper, { RequestAPIFrom } from "@HortalinkAPIWrapper";
+import type { User } from "@interfaces/User";
+
+const wrapper = new APIWrapper(RequestAPIFrom.Server)
+
+const session_cookie = Astro.cookies.get("session_id")
+const session_id = session_cookie?.value || null
+
+const session = session_id ? await wrapper.getCurrentSession(session_id) : null
+
+export const prerender = false
+---
+
+<BaseLayout no_session_fetch={true}>
+    <Fragment slot="head">
+        <title>Hortalink</title>
+    </Fragment>
+    <Fragment slot="body">
+        { session && !session.profile.is_seller && <CustomerHome /> }
+        { !session && <Unsigned /> }
+    </Fragment>
+    <script>
+        /*import Session from "@stores/Session";
+
+        const navbar = document.querySelector<HTMLDivElement>(".navbar_container")
+        const Unsigned = document.querySelector<HTMLDivElement>("#unsigned")
+        const Home = document.querySelector<HTMLDivElement>("#home")
+
+        const value = Session.get()
+        
+        if(value) {
+            isUnsigned(false)
+        } else {
+            Session.listen((v) => {
+                isUnsigned(v === undefined)
+            })
+        }
+
+        function isUnsigned(unsigned: boolean) {
+            if(unsigned) {
+                Unsigned.hidden = false
+            } else {
+                Home.hidden = false
+            }
+
+            navbar.hidden = unsigned
+        }*/
+    </script>
+</BaseLayout>

@@ -1,5 +1,5 @@
 mod ratings;
-mod get;
+pub mod get;
 mod post;
 mod patch;
 mod delete;
@@ -18,6 +18,7 @@ pub fn router() -> Router {
         )
         .route("/", post(post::product))
         .route_layer(permission_required!(AuthGate, UserRole::Seller, UserRole::Verified))
+        .route("/", get(get::products))
         .route("/:product_id", get(get::product))
         .nest("/:product_id/ratings", ratings::router())
 }

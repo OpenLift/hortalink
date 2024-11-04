@@ -29,14 +29,13 @@ pub async fn rating(
             UPDATE seller_product_ratings 
             SET 
                 rating = COALESCE($1, rating),
-                content = COALESCE($2, content)
-            WHERE id = $3 AND author_id = $4
+                content = $2
+            WHERE id = $3
         "#
     )
         .bind::<Option<i16>>(payload.rating.map(|it| it.into()))
         .bind(payload.content)
         .bind(rating_id)
-        .bind(login_user_id)
         .execute(&state.pool)
         .await?;
 

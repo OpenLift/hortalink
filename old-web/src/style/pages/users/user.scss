@@ -1,0 +1,79 @@
+@use "../../colors";
+
+header {    
+    margin: auto;
+    margin-top: 1rem;
+
+    .profile-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+
+        width: calc(100% - 20px);
+        margin: auto;
+
+        .img-container {
+            width: 93px;
+            height: 93px;
+
+            margin: auto;
+    
+            overflow: hidden;
+    
+            border-radius: 50%;
+    
+            img {
+                max-width: 100%;
+                object-fit: contain;
+            }
+    
+            margin-bottom: 0.5rem;
+        }
+    
+        .insights {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+    
+            gap: 2rem;
+    
+            div {
+                text-align: center;
+            }
+        }
+    }
+
+    .user-bio {
+        margin-top: 0.8rem;
+        margin-bottom: 0.8rem;
+
+        p {
+            max-width: 390px;
+            margin: auto;
+            padding: 10px;
+        }
+    }
+
+    .edit-profile {
+        display: block;
+        
+        text-decoration: none;
+        text-align: center;
+
+        width: 95%;
+        margin: auto;
+        margin-top: 0.7rem;
+        padding: 6px 0;
+
+        background-color: colors.$secondary-light;
+        color: black;
+        font-weight: 800;
+        font-size: 0.9em;
+
+        @media screen and (min-width: 400px) {
+            max-width: 370px;
+            padding: 6px 6px;
+        }
+    }
+}

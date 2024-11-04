@@ -1,0 +1,351 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SigninOptions from "../../components/page/access/SigninOptions.astro";
+import Modal from "../../components/util/Modal.astro";
+import getSession from "../../util/getSession";
+
+import "../../style/pages/access.scss";
+
+import DefaultProfile from "../../assets/default-pricture.svg";
+import {Image, getImage} from "astro:assets";
+
+const url = new URL(Astro.request.url)
+const oauth_type = url.searchParams.get("oauth_type")
+const code = url.searchParams.get("code")
+const state = url.searchParams.get("state")
+
+let session = null
+const session_id = Astro.cookies.get("session_id")?.value
+let profileSrc = null
+let logged = false;
+
+if (oauth_type && session_id && code && state) {
+    let response = await getSession(oauth_type, session_id, code, state)
+
+    if (response && Object.keys(response as {}).length > 0) {
+        session = response
+
+        const picture = session.picture ? await getImage({
+            src: session.picture,
+            width: 137,
+            height: 137,
+            quality: 90
+        }) : null
+
+        if (picture) {
+            profileSrc = picture.src
+        }
+    } else {
+        logged = true;
+    }
+}
+
+export const prerender = false
+---
+
+<BaseLayout page="user">
+    <Fragment slot="head">
+        <title>Hortalink: signup</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css"
+              integrity="sha512-0SPWAwpC/17yYyZ/4HSllgaK7/gg9OlVozq8K7rf3J8LvCjYEEIfzzpnA2/SSjpGIunCSD18r3UhvDcu/xncWA=="
+              crossorigin="anonymous" referrerpolicy="no-referrer">
+    </Fragment>
+
+    <Fragment slot="body">
+        <form id="form-1">
+            <label for="user-email">Email</label>
+            <input type="text" id="user-email" name="email" placeholder="email@example.com"
+                   aria-label="Escolha um email para sua nova conta.">
+
+            <label for="user-password">Senha</label>
+            <input type="password" id="user-password" name="password"
+                   aria-label="Escolha uma senha segura para sua nova conta.">
+
+            <label for="confirm-user-password">Confirmar senha</label>
+            <input type="password" id="confirm-user-password" name="confirm-password"
+                   aria-label="Confirme a sua nova senha.">
+
+            <button type="submit">Próximo</button>
+        </form>
+        <p class="alt-text" id="or-text">Ou então</p>
+        <SigninOptions/>
+
+        <form id="form-2" style="display: none">
+            <Image
+                    src={profileSrc ? profileSrc : DefaultProfile}
+                    alt="Foto padrão de perfil"
+                    width={137}
+                    height={137}
+                    loading="eager"
+                    id="profile-image"
+            />
+            <input type="file" id="file-input"/>
+            <Modal id="crop-modal">
+                <div class="modal-header">
+                    <h2>Cortar imagem</h2>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <img
+                                width={137}
+                                height={137}
+                                loading="eager"
+                                id="preview-image"
+
+                                alt="Imagem prévia da foto do usuário"
+                        />
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="modal-cancel-action" id="edit-cancel" onsubmit="return false;">
+                        Cancelar
+                    </button>
+                    <button type="button" class="modal-confirm-action" id="edit-confirm" onsubmit="return false;">
+                        Confirmar
+                    </button>
+                </div>
+            </Modal>
+            <label for="user-name">Nome</label>
+            <input type="text" id="user-name" name="name" value={session ? session.name : ""}/>
+
+            <p class="alt-text" style="font-size: 1.2em; margin-top: 6px; margin-bottom: 6px;">Eu sou:</p>
+
+            <section class="radio-container">
+                <div class="radio-item">
+                    <input type="radio" name="account-type" id="client-account" value="3"/>
+                    <label for="client-account" class="notransform">Cliente</label>
+                </div>
+                <div class="radio-item">
+                    <input type="radio" id="seller-account" name="account-type" value="4"/>
+                    <label for="seller-account" class="notransform">Vendedor</label>
+                </div>
+            </section>
+            <button type="submit" style="margin-top: 0">Cadastrar</button>
+        </form>
+
+        <section id="loading-session" style="display: none">
+            <div class="loader"/>
+            <p>Carregando informações...</p>
+        </section>
+    </Fragment>
+</BaseLayout>
+
+<script define:vars={{session, oauth_type, logged}}>
+    const form = document.querySelector("#form-1")
+    let formSubmitButton = document.querySelector("#form-1 button[type=submit]")
+
+    let originalButtonColor = formSubmitButton.style.color
+    let originalButtonText = formSubmitButton.innerText
+
+    const secondForm = document.querySelector("#form-2")
+
+    const loadingMessage = document.querySelector("#loading-session")
+
+    const global_form = new FormData()
+
+    async function wrap() {
+        if (logged) {
+            window.location.href = "/";
+            return;
+        }
+
+        if (!session && oauth_type) {
+            form.style.display = "none"
+            secondForm.style.display = "none"
+            loadingMessage.style.display = "block"
+
+            hideAlternativeLogins()
+
+            return window.location.reload()
+        }
+
+        if (session) {
+            global_form.append("email", session.email)
+
+            form.style.display = "none"
+
+            formSubmitButton = document.querySelector("#form-2 button[type=submit]")
+
+            hideAlternativeLogins()
+            secondForm.style.display = "flex"
+        }
+
+        function readImage(src, form) {
+            return new Promise(async (resolve, reject) => {
+                const reader = new FileReader()
+
+                const request = await fetch(src)
+                const blob = await request.blob()
+
+                reader.onload = (e) => {
+                    const mime = e.target.result.split(',')[0].split(':')[1]
+                    form.append("image", blob, "profile.jpg")
+                    resolve(true)
+                }
+
+                reader.readAsDataURL(blob)
+            })
+        }
+
+        form.addEventListener("submit", (data) => {
+            data.preventDefault()
+
+            const formdata = new FormData(form)
+            const email = formdata.get("email")
+            const password = formdata.get("password")
+            const confirmPassword = formdata.get("confirm-password")
+
+            if (!email) {
+                return displayErrorMessage("Campo de email ausente")
+            }
+
+            if (!password) {
+                return displayErrorMessage("Campo de senha ausente")
+            }
+
+            if (password !== confirmPassword) {
+                return displayErrorMessage("Senhas não coincidem.")
+            }
+
+            if (password.toString().length < 8) {
+                return displayErrorMessage("A senha ter mais de 8 caracteres")
+            }
+
+            global_form.append("email", email)
+            global_form.append("password", password)
+
+            formSubmitButton = document.querySelector("#form-2 button[type=submit]")
+
+            originalButtonColor = formSubmitButton.style.color
+            originalButtonText = formSubmitButton.innerText
+
+            hideAlternativeLogins()
+            form.style.display = "none"
+            secondForm.style.display = "flex"
+        })
+
+        secondForm.addEventListener("submit", async (e) => {
+            e.preventDefault()
+
+            const formdata = new FormData(secondForm)
+            const name = formdata.get("name")
+            const account_type = formdata.get("account-type")
+
+            if (!name) {
+                return displayErrorMessage("Campo de nome ausente.")
+            }
+
+            if (!account_type) {
+                return displayErrorMessage("Selecione qual o tipo de conta.")
+            }
+
+            const image = document.querySelector("#profile-image")
+
+            global_form.append("name", name)
+            global_form.append("role", account_type)
+            await readImage(image.src, global_form)
+
+            fetch("/api/v1/auth/sign-in", {
+                method: "POST",
+                body: global_form,
+                credentials: "include",
+            }).then(async (request) => {
+                const ok = request.ok
+                if (ok) {
+                    window.location.href = "/"
+                } else {
+                    alert("Erro ao logar.")
+                }
+            })
+        })
+    }
+
+    wrap()
+
+    function hideAlternativeLogins() {
+        document.querySelector(".signin-options").style.display = "none"
+        document.querySelector("#or-text").style.display = "none"
+    }
+
+    function unhideAlternativeLogins() {
+        document.querySelector(".signin-options").style.display = "flex"
+        document.querySelector("#or-text").style.display = "block"
+    }
+
+    function displayErrorMessage(message) {
+        formSubmitButton.style.backgroundColor = "red"
+        formSubmitButton.innerText = message
+
+        const removeTimeout = setTimeout(() => {
+            resetButtonStatus()
+            formSubmitButton.onmouseout = null
+        }, 5000)
+
+        const removeOnHoverTimeout = setTimeout(() => {
+            formSubmitButton.onmouseover = () => {
+                resetButtonStatus()
+                formSubmitButton.onmouseover = null
+                clearTimeout(removeTimeout)
+            }
+        }, 2000)
+    }
+
+    function resetButtonStatus() {
+        formSubmitButton.style.backgroundColor = originalButtonColor
+        formSubmitButton.innerText = originalButtonText
+    }
+</script>
+
+<script>
+    import cropper from "cropperjs";
+
+    const input_file = document.querySelector<HTMLInputElement>("#file-input")
+    const img = document.querySelector<HTMLImageElement>("#profile-image")
+    const preview = document.querySelector<HTMLImageElement>("#preview-image")
+
+    const container = document.querySelector<HTMLDivElement>("#crop-modal")
+    const confirm = document.querySelector<HTMLButtonElement>("#edit-confirm")
+    const cancel = document.querySelector<HTMLButtonElement>("#edit-cancel")
+
+    let Cropper: cropper;
+
+    confirm.addEventListener("click", async () => {
+        if (!Cropper) {
+            return;
+        }
+
+        const cropped_img = Cropper.getCroppedCanvas()
+
+        const img_url = cropped_img.toDataURL()
+        img.src = img_url
+
+        container.style.display = "none"
+        Cropper.destroy()
+        Cropper = undefined
+    })
+
+    cancel.addEventListener("click", async () => {
+        if (!Cropper) {
+            return;
+        }
+
+        container.style.display = "none"
+        Cropper.destroy()
+        Cropper = undefined
+    })
+
+    input_file.addEventListener("change", async (data) => {
+        const file = input_file.files[0] // sempre o primeiro arquivo.
+
+        const image_url = window.URL.createObjectURL(file)
+        preview.src = image_url
+        preview.style.display = "none"
+
+        container.style.display = "block"
+
+        Cropper = new cropper(preview, {
+            viewMode: 3,
+            minContainerHeight: 600
+        })
+    })
+</script>

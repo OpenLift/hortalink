@@ -1,0 +1,39 @@
+---
+import "../../../../style/pages/users/utils/ratings.scss";
+
+import type { Rating } from "../../../../interfaces/Rating";
+import Stairs from "./Stairs.astro";
+
+interface Props {
+    ratings: Rating,
+    average_rating: number
+}
+
+const ratings = Astro.props.ratings
+const avg = Astro.props.ratings.rating
+---
+
+<section class="ratings">
+    {
+        ratings?.ratings?.map((rating) => (
+            <div class="rating">
+                <div class="rating_title">
+                    <div>
+                        <h2>{rating.user.name}</h2>
+                        <p>{new Date(Date.now() - rating.created_at).toLocaleDateString("pt-br", { dateStyle: "short" })}</p>
+                    </div>
+                    <div class="stairs">
+                        <div class="content">
+                            <Stairs
+                                stars={rating.rating}
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div class="rating_content">
+                    <p>{rating.content}</p>
+                </div>
+            </div>
+        ))
+    }
+</section>

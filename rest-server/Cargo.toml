@@ -11,7 +11,7 @@ sqlx = { workspace = true, features = ["macros", "migrate", "chrono", "rust_deci
 garde = { workspace = true, features = ["email", "phone-number"] }
 axum_garde = { workspace = true, features = ["json", "query"] }
 axum = { workspace = true }
-tower-http = { workspace = true }
+tower-http = { workspace = true, features = ["trace"] }
 env_logger = { workspace = true }
 log = { workspace = true }
 tokio = { workspace = true }
@@ -19,12 +19,17 @@ serde = { workspace = true }
 serde_json = { workspace = true }
 tower-sessions-sqlx-store = { workspace = true }
 axum-login = { workspace = true }
+dotenv = { workspace = true }
 
-reqwest = { version = "0.12.0", default-features = false, features = ["json"] }
+reqwest = { version = "0.12.4", default-features = false, features = ["json"] }
+axum_typed_multipart = { version = "0.12.1" }
 thiserror = { version = "1.0.57" }
 password-auth = { version = "1.0.0" }
-time = { version = "0.3.34" }
-oauth2 = { version = "4.4.2" }
+time = { version = "0.3.36" }
+oauth2 = { version = "5.0.0-alpha.4", default-features = false, features = ["reqwest", "rustls-tls"] }
+image = { version = "0.25.1" }
+rust_decimal = { version = "1.35.0", features = ["rkyv"] }
+locale = { version = "0.2.2" }
 
 [dev-dependencies]
 axum-test = { workspace = true }

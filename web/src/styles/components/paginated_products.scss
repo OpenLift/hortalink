@@ -1,0 +1,13 @@
+@use "../colors";
+
+.paginated_products {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 0.2rem;
+
+    span {
+        cursor: pointer;
+    }
+}

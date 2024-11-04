@@ -1,47 +1,117 @@
 use axum::{Extension, Json};
-use axum::extract::Path;
+use axum::extract::{Path, Query};
+use axum_garde::WithValidation;
+use sqlx::{Pool, Postgres};
 
+use crate::app::auth::AuthSession;
 use crate::app::server::AppState;
 use crate::json::error::ApiError;
 use crate::json::products::SellerProductResponse;
-use crate::models::products::SellerProduct;
-use crate::models::schedules::Schedule;
+use crate::json::utils::HomePage;
+use crate::models::products::{SellerProduct, SellerProductPreview};
+use crate::models::users::PreviewUser;
 
 pub async fn product(
     Extension(state): Extension<AppState>,
+    auth_session: AuthSession,
     Path((seller_id, product_id)): Path<(i32, i32)>,
 ) -> Result<Json<SellerProductResponse>, ApiError> {
-    let mut tx = state.pool.begin().await?;
-
     let product = sqlx::query_as::<_, SellerProduct>(
         r#"
             SELECT s.id, p.id AS product_id, p.name, 
-                s.photos, s.quantity, s.price,
-                PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY sp.rating) AS rating
+                s.photos, s.quantity, s.price, s.description,
+                COALESCE(CAST(s.rating_sum AS FLOAT) / CAST(NULLIF(s.rating_quantity, 0) AS FLOAT), NULL) AS rating,
+                s.rating_quantity, s.unit, s.unit_quantity
             FROM seller_products s
             JOIN products p ON s.product_id = p.id
             LEFT JOIN seller_product_ratings sp ON s.id = sp.seller_product_id
-            WHERE s.id = $1 AND seller_id = $2
+            WHERE s.id = $1 AND s.seller_id = $2
             GROUP BY s.id, p.id, p.name, s.photos, s.quantity, s.price;
         "#
     )
         .bind(product_id)
         .bind(seller_id)
-        .fetch_optional(&mut *tx)
+        .fetch_optional(&state.pool)
         .await?
         .ok_or(ApiError::NotFound("Produto não encontrado".to_string()))?;
 
-    let schedule = sqlx::query_as::<_, Schedule>(
+    let seller = sqlx::query_as::<_, PreviewUser>(
         r#"
-            SELECT s.id, s.address, s.start_time, s.end_time, s.day_of_week
+            SELECT id AS user_id, avatar as user_avatar, name as user_name
+            FROM users
+            WHERE id = $1
+        "#
+    )
+        .bind(seller_id)
+        .fetch_one(&state.pool)
+        .await?;
+
+    let schedules = sqlx::query_scalar::<_, i64>(
+        r#"
+            SELECT sc.schedule_id
             FROM seller_products sp
-            JOIN schedules s ON sp.schedule_id = s.id
+            JOIN products_schedules sc ON sc.seller_product_id = sp.id
             WHERE sp.id = $1
         "#
     )
         .bind(product_id)
-        .fetch_all(&mut *tx)
+        .fetch_all(&state.pool)
         .await?;
 
-    Ok(Json(SellerProductResponse { product, schedule }))
+    if let Some(user) = auth_session.user {
+        if user.roles.contains(&3) {
+            sqlx::query(
+                r#"
+                INSERT INTO products_seen_recently (seller_product_id, customer)
+                VALUES ($1, $2) 
+                ON CONFLICT ON CONSTRAINT unique_product_customer
+                DO UPDATE SET viewed_at = CURRENT_TIMESTAMP;
+            "#
+            )
+                .bind(product_id)
+                .bind(user.id)
+                .execute(&state.pool)
+                .await?;
+        }
+    };
+
+    Ok(Json(SellerProductResponse { product, schedules, seller }))
+}
+
+pub async fn products(
+    Extension(state): Extension<AppState>,
+    Path(seller_id): Path<i32>,
+    WithValidation(query): WithValidation<Query<HomePage>>,
+) -> Result<Json<Vec<SellerProductPreview>>, ApiError> {
+    let products = fetch_products(seller_id, query.into_inner(), &state.pool)
+        .await?;
+
+    Ok(Json(products))
+}
+
+pub async fn fetch_products(
+    seller_id: i32,
+    query: HomePage,
+    pool: &Pool<Postgres>,
+) -> Result<Vec<SellerProductPreview>, ApiError> {
+    let products = sqlx::query_as::<_, SellerProductPreview>(
+        r#"
+            SELECT s.id, p.id AS product_id, p.name,
+               s.photos[1] AS photo, s.price, s.unit, s.unit_quantity,
+               COALESCE(CAST(s.rating_sum AS FLOAT) / CAST(NULLIF(s.rating_quantity, 0) AS FLOAT), NULL) AS rating,
+               s.rating_quantity, s.seller_id
+            FROM seller_products s
+            JOIN products p ON s.product_id = p.id
+            WHERE s.seller_id = $1
+            ORDER BY s.id
+            LIMIT $2 OFFSET $3
+        "#
+    )
+        .bind(seller_id)
+        .bind(query.per_page)
+        .bind((query.page - 1) * query.per_page)
+        .fetch_all(pool)
+        .await?;
+
+    Ok(products)
 }

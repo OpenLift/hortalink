@@ -2,9 +2,10 @@ use rest_server::app::server::Server;
 
 #[tokio::main]
 async fn main() {
+    dotenv::dotenv().ok();
     env_logger::init();
 
-    let app = Server::new("application.toml")
+    let app = Server::new()
         .await;
     sqlx::migrate!()
         .run(&app.state.pool)

@@ -1,0 +1,200 @@
+---
+import getUser from "../util/getUser";
+import Modal from "../components/util/Modal.astro";
+import { Image } from "astro:assets";
+
+import "../style/pages/users/edit_user.scss";
+
+const session_id = Astro.cookies.get("session_id")
+const user_data = session_id ? await getUser(session_id.value) as any : null    
+
+
+export const prerender = false
+---   
+<form id="form">
+    <Image
+        src={`http://localhost:5767/avatars/${user_data.user.id}/${user_data.user.avatar}.png?size=128`}
+        alt="Foto padrão de perfil"
+        width={137}
+        height={137}
+        loading="eager"
+        id="profile-image"
+    />
+    <input type="file" id="file-input" />
+    <Modal id="crop-modal">
+        <div class="modal-header">
+            <h2>Cortar imagem</h2>
+        </div>
+        <div class="modal-body">
+            <div>
+                <img
+                    width={137}
+                    height={137}
+                    loading="eager"
+                    id="preview-image"
+                    
+                    alt="Imagem prévia da foto do usuário"
+                />
+            </div>
+        </div>
+        <div class="modal-buttons">
+            <button type="button" class="modal-cancel-action" id="edit-cancel" onsubmit="return false;">Cancelar</button>
+            <button type="button" class="modal-confirm-action" id="edit-confirm" onsubmit="return false;">Confirmar</button>
+        </div>
+    </Modal>
+    <label for="user-name">Nome</label>
+    <input type="text" id="user-name" name="name" value={user_data.user.name}/>
+
+    <label for="user-email">Email</label>
+    <input type="text" id="user-email" name="email" value={user_data.user.email} />
+
+    <button type="submit" style="margin-top: 0">Salvar</button>
+</form>
+
+<section id="loading-session" style="display: none">
+    <div class="loader" />
+    <p>Carregando informações...</p>
+</section>
+
+<script define:vars={{ user_data }}>
+
+let formSubmitButton = document.querySelector("#form button[type=submit]")
+
+let originalButtonColor = formSubmitButton.style.color
+let originalButtonText = formSubmitButton.innerText
+
+const form = document.querySelector("#form")
+
+const global_form = new FormData()
+
+async function wrap() {
+    function readImage(src, form) {
+        return new Promise(async (resolve, reject) => {
+            const reader = new FileReader()
+
+            const request = await fetch(src)
+            const blob = await request.blob()
+
+            reader.onload = (e) => {
+                const mime = e.target.result.split(',')[0].split(':')[1]
+                form.append("image", blob, "profile.jpg")
+                resolve(true)
+            }
+
+            reader.readAsDataURL(blob)
+        })
+    }
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault()
+
+        const formdata = new FormData(form)
+        const name = formdata.get("name")
+        const email = formdata.get("email")
+
+        if(!name) {
+            return displayErrorMessage("Campo de nome ausente.")
+        }
+
+        if(!email) {
+            return displayErrorMessage("Campo de Email ausente.")
+        }
+
+        const image = document.querySelector("#profile-image")
+
+        global_form.append("name", name)
+        global_form.append("email", email)
+        await readImage(image.src, global_form)
+
+        fetch("http://localhost:5443/api/v1/users/@me", {
+            method: "PATCH",
+            body: global_form,
+            credentials: "include",
+        }).then((request) => {
+            const ok = request.ok
+            console.log(ok)
+        })
+    })
+}
+
+wrap()
+
+function displayErrorMessage(message) {
+    formSubmitButton.style.backgroundColor = "red"
+    formSubmitButton.innerText = message
+
+    const removeTimeout = setTimeout(() => {
+        resetButtonStatus()
+        formSubmitButton.onmouseout = null
+    }, 5000)
+
+    const removeOnHoverTimeout = setTimeout(() => {
+        formSubmitButton.onmouseover = () => {
+            resetButtonStatus()
+            formSubmitButton.onmouseover = null
+            clearTimeout(removeTimeout)
+        }
+    }, 2000)
+}
+
+function resetButtonStatus() {
+    formSubmitButton.style.backgroundColor = originalButtonColor
+    formSubmitButton.innerText = originalButtonText
+}
+</script>
+
+<script>
+import cropper from "cropperjs";
+
+const input_file = document.querySelector<HTMLInputElement>("#file-input")
+const img = document.querySelector<HTMLImageElement>("#profile-image")
+const preview = document.querySelector<HTMLImageElement>("#preview-image")
+
+const container = document.querySelector<HTMLDivElement>("#crop-modal")
+const confirm = document.querySelector<HTMLButtonElement>("#edit-confirm")
+const cancel = document.querySelector<HTMLButtonElement>("#edit-cancel")
+
+let Cropper: cropper;
+
+confirm.addEventListener("click", async () => {
+    if(!Cropper) {
+        return;
+    }
+
+    const cropped_img = Cropper.getCroppedCanvas()
+
+    const img_url = cropped_img.toDataURL()
+    img.src = img_url
+
+    container.style.display = "none"
+    Cropper.destroy()
+    Cropper = undefined
+})
+
+cancel.addEventListener("click", async () => {
+    if(!Cropper) {
+        return;
+    }
+
+    container.style.display = "none"
+    Cropper.destroy()
+    Cropper = undefined
+})
+
+input_file.addEventListener("change", async (data) => {
+    const file = input_file.files[0] // sempre o primeiro arquivo.
+    
+    const image_url = window.URL.createObjectURL(file)
+    preview.src = image_url
+    preview.style.display = "none"
+    
+    container.style.display = "block"
+
+    Cropper = new cropper(preview, {
+        viewMode: 3,
+        minContainerHeight: 600
+    })
+})
+
+
+</script>

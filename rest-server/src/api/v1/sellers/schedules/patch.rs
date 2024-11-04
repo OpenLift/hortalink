@@ -1,5 +1,6 @@
 use axum::{Extension, Json};
 use axum::extract::Path;
+use axum::http::StatusCode;
 use axum_garde::WithValidation;
 
 use crate::app::auth::AuthSession;
@@ -22,6 +23,12 @@ pub async fn schedule(
     }
 
     let payload = payload.into_inner();
+    
+    if let Some(location) = payload.location.as_ref() {
+        if location.latitude.is_none() || location.longitude.is_none() {
+            return Err(ApiError::Custom(StatusCode::BAD_REQUEST, "Campos inválidos: latitude ou longitude faltando".to_string())); 
+        }
+    }
 
     sqlx::query(r#"
         UPDATE schedules
@@ -35,7 +42,7 @@ pub async fn schedule(
     "#)
         .bind(payload.location
             .map(|loc| {
-                format!("ST_SetSRID(ST_MakePoint({}, {}),  4326)", loc.latitude, loc.longitude)
+                format!("ST_SetSRID(ST_MakePoint({}, {}),  4674)", loc.latitude.unwrap(), loc.longitude.unwrap())
             }))
         .bind(payload.address)
         .bind(payload.start_time)

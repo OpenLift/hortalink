@@ -1,11 +1,10 @@
 use garde::Validate;
 use serde::{Deserialize, Serialize};
-use sqlx::types::chrono::NaiveDateTime;
 
 #[derive(Serialize, Deserialize, Validate)]
 pub struct PatchProductCart {
     #[garde(skip)]
-    pub withdrawn: Option<NaiveDateTime>,
+    pub withdrawn: Option<i32>,
     #[garde(range(min = 1, max = 20))]
     pub amount: Option<i32>,
 }
@@ -15,7 +14,7 @@ pub struct PostProductCart {
     #[garde(skip)]
     pub seller_product_id: i32,
     #[garde(skip)]
-    pub withdrawn: NaiveDateTime,
+    pub withdrawn: Option<i64>,
     #[garde(range(min = 1, max = 20))]
     pub amount: i32,
 }

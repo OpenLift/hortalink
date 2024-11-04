@@ -1,0 +1,14 @@
+---
+import "../style/util/modal.scss";
+
+interface Props {
+    id: string
+}
+const id = Astro.props.id
+---
+
+<div class="modal-container" id={id}>
+    <div class="modal-content">
+        <slot />
+    </div>
+</div>

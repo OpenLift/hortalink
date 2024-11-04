@@ -1,0 +1,31 @@
+---
+import "../../../../../style/pages/users/utils/ratings.scss";
+
+import Ratings from "./Ratings";
+
+import { getImage } from "astro:assets";
+
+import Star from "../../../../../assets/star.svg";
+import Staroff from "../../../../../assets/star_off.svg";
+import filter from "../../../../../assets/filter-thin.svg";
+import filtersolid from "../../../../../assets/filter-solid.svg";
+import X from "../../../../../assets/X.svg";
+
+const star_img = await getImage({ src: Star })
+const staroff_img = await getImage({ src: Staroff })
+
+const filter_img = await getImage({ src: filter })
+const filtersolid_img = await getImage({ src: filtersolid })
+const x_img = await getImage({ src: X })
+
+---
+
+<Ratings
+    star_src={star_img.src}
+    staroff_src={staroff_img.src}
+    filter_src={filter_img.src}
+    filter_solid_src={filtersolid_img.src}
+    x_src={X.src}
+
+    client:only="react"
+/>

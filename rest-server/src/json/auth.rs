@@ -1,7 +1,8 @@
+use axum::body::Bytes;
+use axum_typed_multipart::{FieldData, TryFromMultipart};
 use garde::Validate;
 use oauth2::CsrfToken;
-use serde::{Deserialize, Serialize};
-use common::entities::UserRole;
+use serde::{Deserialize, Serialize, Serializer};
 
 #[derive(Debug, Clone, Deserialize)]
 pub enum Credentials {
@@ -19,28 +20,49 @@ pub struct OAuthCreds {
 pub struct LoginCreds {
     #[garde(email)]
     pub email: String,
-    #[garde(length(min=8, max=64))]
+    #[garde(length(min = 8, max = 64))]
     pub password: String,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct UserInfo {
     pub email: String,
-    pub name: String
+    pub name: String,
+    pub picture: Option<PictureVariant>,
 }
 
-#[derive(Deserialize, Serialize, Validate)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct PictureData {
+    pub height: u32,
+    pub is_silhouette: bool,
+    pub url: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Picture {
+    pub data: PictureData,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+#[serde(untagged)]
+pub enum PictureVariant {
+    Url(String),
+    Data(Picture),
+}
+
+#[derive(Validate, TryFromMultipart)]
 pub struct SignCreds {
     #[garde(skip)]
     pub name: String,
     #[garde(email)]
     pub email: String,
-    #[garde(length(min=8, max=64))]
-    pub password: String,
+    #[garde(length(min = 8, max = 64))]
+    pub password: Option<String>,
+    #[garde(range(min = 3, max = 4))]
+    pub role: i32,
     #[garde(skip)]
-    pub avatar: Option<String>,
-    #[garde(custom(validate_account_role))]
-    pub role: UserRole
+    #[form_data(limit = "15MiB")]
+    pub image: Option<FieldData<Bytes>>,
 }
 
 #[derive(Serialize)]
@@ -50,13 +72,18 @@ pub struct AuthUrlResponse {
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct AuthzResp {
-    pub code: String,
     pub state: CsrfToken,
+    pub code: String,
 }
 
-fn validate_account_role(value: &UserRole, _: &()) -> garde::Result {
-    match value {
-        UserRole::Customer | UserRole::Seller => Ok(()),
-        _ => Err(garde::Error::new("Invalid account role")),
+impl Serialize for PictureVariant {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        match self {
+            PictureVariant::Url(url) => serializer.serialize_str(&url),
+            PictureVariant::Data(data) => serializer.serialize_str(&data.data.url),
+        }
     }
 }

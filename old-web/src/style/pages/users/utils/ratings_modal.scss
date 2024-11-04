@@ -1,0 +1,88 @@
+@use "../../../colors";
+
+.modal_basis {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    background-color: rgba(0, 0, 0, 0.288);
+
+    .modal_container {
+        position: fixed;
+        bottom: 40px;
+        left: 50%;
+
+        transform: translateX(-50%);
+
+        width: 430px;
+        min-height: 200px;
+
+        background-color: colors.$light;
+        color: colors.$dark;
+
+        border-radius: 15px 15px 0 0;
+
+        .modal_content {
+            .modal_header {
+                display: flex;
+                justify-content: space-between;
+
+                padding: 20px;
+                padding-bottom: 0;
+
+                width: 100%;
+
+                .on_center {
+                    justify-self: center;
+
+                   width: 100%;
+                   text-align: center;
+                }
+
+                .on_end {
+                    justify-self: end;
+                    margin-left: -23px;
+                }
+            }
+
+            .filter_options {
+                text-align: center;
+                
+                & > p {
+                    margin-bottom: 0.8rem;
+                }
+
+                .filters {
+                    display: flex;
+                    justify-content: center;
+                    gap: 2rem;
+
+                    .filter {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        gap: 0.3rem;
+
+                        background-color:#E5BD5394;
+                        padding: 5px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.line {
+    background-color: rgba(0, 0, 0, 0.12);
+    
+    height: 1px;
+    
+    width: 95%;
+    max-width: 460px;
+
+    margin: 1rem auto;
+}

@@ -1,0 +1,90 @@
+@use "../../colors";
+
+@mixin flex {
+    display: flex;
+    align-items: center;
+}
+
+header {
+    margin-top: 1rem;
+
+    h1 {
+        text-align: center;
+        margin-bottom: 0.5rem;
+
+        font-size: 1.6em;
+    }
+
+    .infos {
+        @include flex();
+        justify-content: center;
+
+        gap: 0.3rem;
+    }
+
+    p {
+        color: colors.$mid_1;
+    }
+}
+
+.ratings {
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+
+    padding: 12px;
+
+    @include flex();
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.2rem;
+
+    .rating {
+        .rating_title {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+
+            h2 {
+                font-size: 1.1em;
+                text-transform: capitalize;
+            }
+
+            p {
+                color: colors.$mid_1;
+                font-size: 0.8em;
+
+                margin-top: 0.2rem;
+            }
+
+            .stairs {
+                justify-self: end;
+
+                .content {
+                    @include flex();
+
+                    
+                }
+            }
+        }
+
+        .rating_content {
+            margin-top: 0.5rem;
+
+            p {
+                font-size: 0.95em;
+                font-weight: 400;
+            }
+        }
+    }
+}
+
+.line {
+    background-color: rgba(0, 0, 0, 0.12);
+    
+    height: 1px;
+    
+    width: 95%;
+    max-width: 460px;
+
+    margin: 1rem auto;
+}

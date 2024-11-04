@@ -1,0 +1,36 @@
+---
+import { Image } from "astro:assets";
+import type { DetailedProduct, Product } from '../../../../../interfaces/Product';
+
+// @ts-ignore
+import Gallery from "./Gallery";
+
+interface Props {
+    product: DetailedProduct
+}
+
+const product = Astro.props.product
+---
+
+<header>
+    <Gallery photos={product.product.photos} product_id={product.product.id} client:load />
+    <section class="product_infos">
+        <div class="infos">
+            <h1>{product.product.product.name}</h1>
+            <div class="weight">
+                <Image src={"/assets/weight.svg"} width={10} height={16} alt="Imagem de um peso, representando o peso da unidade."/>
+                <p>{product.product.unit_quantity} {product.product.unit}</p>
+            </div>
+            <p class="price">R$ {product.product.price}</p>
+        </div>
+        <div class="meta">
+            <a class="rating" href={`${product.product.id}/ratings`}>
+                <Image
+                    src={"/assets/star.svg"} width={16} height={16} alt="Imagem de uma estrela ilustrando as avaliações"
+                />
+                <p>{product.product.rating} ({product.product.rating_quantity})</p>
+            </a>
+            <a class="schedule_btn" href="/">Ver Agenda</a>
+        </div>
+    </section>
+</header>

@@ -1,0 +1,68 @@
+---
+import "../../../../../style/pages/users/seller.scss";
+import type { User } from "../../../../../interfaces/User";
+
+import { Image } from "astro:assets";
+
+import Comment from "../../../../../assets/comment.svg";
+
+import RatingResume from "./RatingResume.astro";
+import Metrics from "./Metrics.astro";
+
+interface Props {
+    user: User
+}
+
+const user = Astro.props.user
+
+let ratings = 0
+let total_rating = 0
+
+for(const product of user.products) {
+    total_rating += product.rating
+    ratings += 1
+}
+
+const avg_rating = total_rating / user.products.length
+---
+
+<header>
+    <div class="solid-bg" />
+    <div class="content">
+        <section class="infos">
+            <div class="profile_img">
+                <Image
+                    src=`${import.meta.env.PUBLIC_FRONTEND_CDN_URL}/avatars/${user.profile.id}/${user.profile.avatar}.jpg?size=256`
+                    alt="Foto de perfil do vendedor"
+                    width={102}
+                    height={102}
+                />
+            </div>
+
+            <div class="chat_img">
+                <Image
+                    src={Comment}
+                    alt="Ícone de comentário. Clique aqui para abrir um chat ou criar uma avaliação."
+                    width={33}
+                    height={33}
+                />
+            </div>
+
+            <RatingResume
+                rating={avg_rating}
+                rating_quantity={ratings}
+            />
+
+            <div class="seller_presentation">
+                <h1>{user.profile.name}</h1>
+                <p>{user.profile.bio || "Este usuário não tem uma biografia."}</p>
+                
+                <Metrics
+                    products={user.products.length}
+                    followers={user.profile.followers}
+                    orders={user.profile.orders_received}
+                />
+            </div>
+        </section>
+    </div>
+</header>

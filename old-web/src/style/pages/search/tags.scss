@@ -1,0 +1,25 @@
+@use "../../colors";
+
+.tags {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 10px;
+
+    .tag {
+        display: flex;
+        align-items: center;
+
+        border-radius: 9px;
+        height: 35px;
+
+        padding: 5px 7px;
+
+        vertical-align: middle;
+        
+        background-color: rgba(175, 175, 175, 0.30);
+        color: #585858B2;
+        font-weight: 700;
+    }
+}

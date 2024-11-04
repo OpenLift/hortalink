@@ -1,0 +1,32 @@
+---
+import "../style/pages/users/notifications.scss";
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import NotificationsList from "../components/page/user/NotificationsList";
+import get_notifications from "../api/get_notifications";
+
+const session_id = Astro.cookies.get("session_id")
+
+if(!session_id) {
+    return {
+        404: true
+    }
+}
+
+const notifications = await get_notifications(session_id.value)
+---
+
+<BaseLayout page="nothing">
+    <Fragment slot="head">
+        <title>Hortalink | Notificações</title>
+    </Fragment>
+    <Fragment slot="body">
+        <header class="notifications_list_header">
+            <h1>Notificações</h1>
+        </header>
+        <div class="border" />
+        <main class="notifications_list_main">
+            <NotificationsList client:load notifications={notifications} />
+        </main>
+    </Fragment>
+</BaseLayout>

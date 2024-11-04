@@ -1,0 +1,72 @@
+---
+import "../style/global.scss";
+
+import Navbar from "./Navbar.astro";
+import getUser from "../util/getUser";
+import NotificationsWatcher from "../components/util/NotificationsWatcher";
+import WatchProductsDistance from "../components/util/WatchProductsDistance";
+
+import Images from "../stores/Images";
+import { getImage } from "astro:assets";
+const assets = await import.meta.glob("../assets/*")
+
+interface Props {
+    page: string
+}
+
+const session_id = Astro.cookies.get("session_id")?.value
+let role = null
+
+if(session_id) {
+    const user_data = await getUser(session_id).catch(e => {
+        return {}
+    }) as any
+
+    if(user_data?.profile?.roles?.includes(3)) {
+        role = "customer"
+    } else if (user_data?.profile?.roles?.includes(4)) {
+        role = "seller"
+    }
+
+}
+const page = Astro.props.page
+
+/**
+ * Gambiarra para poder salvar a URL dos assets otimizados numa store para todos os componentes acessarem.
+ * É necessário porque o astro:assets só funciona em componentes Astro (bola fora do Astro isso ai).
+ */
+
+const images: Record<string, string> = {}
+
+for(const key of Object.keys(assets)) {
+    const filename = key.replace("../assets/", "")
+
+    const asset = assets[key]
+    const file = await asset() as any
+
+    const optimized_file = await getImage({
+        src: file.default as ImageMetadata,
+        format: "webp"
+    })
+
+    images[filename] = optimized_file.src
+}
+
+Images.set(images) // server-side
+---
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <slot name="head" />
+</head>
+<body>
+    <div id="site-container">
+        <slot name="body" />
+    </div>
+    {
+        role && <Navbar type={role} page={page} />
+    }
+    <NotificationsWatcher client:only="react" session_id={session_id} />
+    <WatchProductsDistance client:only="react" />
+</body>

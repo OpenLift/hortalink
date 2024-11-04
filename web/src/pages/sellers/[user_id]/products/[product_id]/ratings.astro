@@ -1,0 +1,27 @@
+---
+import "@styles/pages/users/ratings.scss";
+
+import BaseLayout from "@layouts/BaseLayout.astro";
+import RatingsList from "@components/pages/users/products/ratings/Ratings";
+
+import APIWrapper, { RequestAPIFrom } from "@HortalinkAPIWrapper";
+
+const api = new APIWrapper(RequestAPIFrom.Server)
+
+const { user_id, product_id } = Astro.params
+const session = Astro.cookies.get("session_id")
+
+const rating = await api.getProductRatings(Number(user_id), Number(product_id), session.value)
+---
+
+<BaseLayout>
+    <Fragment slot="head">
+        <title>Tela do produto</title>
+    </Fragment>
+    <Fragment slot="body">
+        <RatingsList
+            ratings={rating}
+            client:only="react"
+        />
+    </Fragment>
+</BaseLayout>

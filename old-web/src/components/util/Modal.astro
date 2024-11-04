@@ -1,0 +1,13 @@
+---
+import ModalLayout from "../../layouts/ModalLayout.astro";
+
+interface Props {
+    id: string
+}
+
+const id = Astro.props.id
+---
+
+<ModalLayout id={id}>
+    <slot />
+</ModalLayout>

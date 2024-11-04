@@ -1,0 +1,147 @@
+---
+import { Image } from "astro:assets";
+---
+
+<section class="form">
+    <h1>Olá! Cadastre-se</h1>
+    <form id="first_form">
+        <p class="bad_warning" id="first_form_warnings"></p>
+
+        <input type="text" id="email" name="email" placeholder="Email" />
+        <input type="password" id="password" name="password" placeholder="Senha" />
+        <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirmar sua senha" />
+
+        <button type="submit">Próximo</button>
+    </form>
+</section>
+
+<section class="auth_alternatives">
+    <p>Ou registre-se com</p>
+    <div class="alternatives">
+        <button class="alternative" name="facebook">
+            <Image
+                src="/assets/facebook.svg"
+                width={30}
+                height={30}
+                alt="Logo da rede social Facebook, clique para fazer login com sua conta do Facebook."
+            />
+        </button>
+
+        <button class="alternative" name="google">
+            <Image
+                src="/assets/google.svg"
+                width={30}
+                height={30}
+                alt="Logo da Google, clique para fazer login com sua conta Google."
+            />
+        </button>
+
+        <button class="alternative" name="linkedin">
+            <Image
+                src="/assets/linkedin.svg"
+                width={30}
+                height={30}
+                alt="Logo da rede social Linkedin, clique para fazer login com sua conta do Linkedin."
+            />
+        </button>
+    </div>
+
+    <p class="login_bottom_text">Já tem uma conta? <a href="/signin">Faça login</a></p>
+</section>
+
+<script>
+    import Sign, { SignUpFormView } from "@stores/pages/Sign";
+    import getSession from "src/API/APIFunctions/getSession";
+
+    const form = document.querySelector<HTMLFormElement>("#first_form")
+    const warningsParagraph = document.querySelector<HTMLParagraphElement>("#first_form_warnings")
+    const user_img = document.querySelector<HTMLImageElement>("#user_profile_img")
+
+    const params = new URL(window.location.href).searchParams
+
+    async function checkForSession() {
+        const oauth_type = params.get("oauth_type")
+        const code = params.get("code")
+        const state = params.get("state")
+
+        if (!oauth_type || !code || !state) {
+            console.log(window.location.href)
+            throw new Error("invalid session")
+        }
+
+        const session = await getSession(oauth_type, code, state)
+
+        return session
+    }
+
+    checkForSession().then((session: any) => {
+        // usou o login com rede social
+        const emailInput = document.querySelector<HTMLInputElement>("#first_form #email")
+        
+        emailInput.value = session.email
+        
+        if(session.picture) {
+            user_img.src = session.picture
+        }
+        
+        Sign.SignUpFormView.set(SignUpFormView.Profile)
+    }).catch(() => {
+        // não usou login com rede social. Nesse caso vai ter que prover as credenciais.
+        form.addEventListener("submit", (e) => {
+            e.preventDefault()
+
+            const formdata = new FormData(form)
+            
+            const email = formdata.get("email")
+            const password = formdata.get("password")
+            const confirmPassword = formdata.get("confirm_password")
+
+            if(!email) {
+                warningsParagraph.textContent = "Forneça um email."
+                return;
+            }
+
+            if(!password) {
+                warningsParagraph.textContent = "Forneça sua senha."
+                return
+            }
+
+            if(!confirmPassword) {
+                warningsParagraph.textContent = "Confirme sua senha."
+                return
+            }
+
+            if(password != confirmPassword) {
+                warningsParagraph.textContent = "Senhas não coincidem."
+                return
+            }
+
+            Sign.SignUpFormView.set(SignUpFormView.Profile)
+        })
+    })
+</script>
+
+<script>
+    const buttons = document.querySelectorAll<HTMLButtonElement>(".auth_alternatives button")
+
+    for(const button of buttons) {
+        button.addEventListener("click", async () => {
+            try {
+                const response = await fetch(`${import.meta.env.PUBLIC_FRONTEND_API_URL}/v1/oauth/${button.name}`, {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                } else {
+                    let data = await response.json()
+
+                    window.location.href = data.auth_url;
+                }
+            } catch (error) {
+                console.error('There was a problem with the fetch operation: ', error);
+            }
+        })
+    }
+</script>

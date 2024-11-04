@@ -9,7 +9,7 @@ use crate::json::serialize_time;
 
 #[derive(sqlx::FromRow, Serialize)]
 pub struct Schedule {
-    id: i32,
+    id: i64,
     address: String,
     #[serde(serialize_with = "serialize_time")]
     start_time: Time,

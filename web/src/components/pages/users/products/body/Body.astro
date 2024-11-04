@@ -1,0 +1,59 @@
+---
+import { Image } from 'astro:assets';
+
+import type { DetailedProduct, Product } from '../../../../../interfaces/Product';
+
+import Rating from '../utils/Rating.astro';
+
+interface Props {
+    product: DetailedProduct
+}
+
+const product = Astro.props.product
+---
+
+<main>
+    <div class="description">
+        <section class="description_title">
+            <h2>Descrição</h2>
+        </section>
+        <p>{product.product.description || "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Doloremque veniam, ut quos beatae excepturi explicabo voluptas tempora aut pariatur aliquam facere, vero iure. Eos iste placeat quas magnam quae laboriosam?"}</p>
+    </div>
+    <div class="line" style="max-width: 490px;" />
+    <section class="seller">
+       
+        <div class="seller_title">
+            <h2>Vendido por</h2>
+            <div class="location on_end">
+                <p>1,2km</p>
+                <Image
+                    src={"/assets/location.svg"}
+                    alt="Ícone de um GPS, o texto ao lado esquerdo é a distância aproximada que você está do produto."
+                    width={16}
+                    height={16}
+                />
+            </div>
+        </div>
+        <div class="seller_infos">
+            <a href={`/users/${product.seller.id}`}>
+                <div class="seller_name">
+                    <div class="img_container">
+                        <Image
+                            src=`${import.meta.env.PUBLIC_FRONTEND_CDN_URL}/avatars/${product.seller.id}/${product.seller.avatar}.jpg?size=256`
+                            alt="Foto de perfil do vendedor",
+                            width={57}
+                            height={57}
+                        />
+                    </div>
+                    <h2>{product.seller.name}</h2>
+                </div>
+                <Rating
+                    rate={{
+                        quantity: 5,
+                        rating: 4.2
+                    }}
+                />
+                </div>
+            </a>
+    </section>
+</main>
