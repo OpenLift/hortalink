@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "astro dev --host"
+    "dev": "astro dev --host",
+    "build": "astro build"
   },
   "keywords": [],
   "author": "",
