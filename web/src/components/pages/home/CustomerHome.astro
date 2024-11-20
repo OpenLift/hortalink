@@ -69,6 +69,9 @@ import SearchContainer from "./search/SearchContainer.astro";
         homepage.hidden = true
 
         hideNoSearchIcons()
+        setTimeout(() => {
+            screen.set(Screen.Menu)
+        }, 400)
     }
 
     home_nav_link?.addEventListener("click", (e) => {
