@@ -16,7 +16,7 @@ export default function RecentProducts() {
 
     useEffect(() => {
         async function run() {
-            const data = await api.getRecentProducts(page)
+            const data = await api.getMoreOrderProducts(page)
 
             setProducts(data)
         }
