@@ -99,4 +99,16 @@ import SearchContainer from "./search/SearchContainer.astro";
         hideNoSearchIcons()
         screen.set(Screen.Menu)
     })
+
+    screen.listen((v) => {
+        if(v == Screen.Home) {
+            unhideSearchIcons()
+        } else {
+            hideNoSearchIcons()
+        }
+
+        
+        searchpage.hidden = !(v == Screen.Menu || v == Screen.Results)
+        homepage.hidden = !(v == Screen.Home)
+    })
 </script>

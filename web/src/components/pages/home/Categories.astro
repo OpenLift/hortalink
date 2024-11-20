@@ -7,7 +7,7 @@ import "@styles/pages/home/categories.scss";
     <h1>Categorias</h1>
 </div>
 <section class="categories">
-    <div class="category">
+    <div class="category" data-category="2">
         <div class="image">
             <img
                 src={`${import.meta.env.PUBLIC_FRONTEND_CDN_URL}/resources/products/cebola.jpg?size=256`}
@@ -19,7 +19,7 @@ import "@styles/pages/home/categories.scss";
         </div>
         <p>Raízes</p>
     </div>
-    <div class="category">
+    <div class="category" data-category="2">
         <div class="image">
             <img
                 src={`${import.meta.env.PUBLIC_FRONTEND_CDN_URL}/resources/products/tomate.jpg?size=256`}
@@ -31,7 +31,7 @@ import "@styles/pages/home/categories.scss";
         </div>
         <p>Frutas</p>
     </div>
-    <div class="category">
+    <div class="category" data-category="3">
         <div class="image">
             <img
                 src={`${import.meta.env.PUBLIC_FRONTEND_CDN_URL}/resources/products/alface.jpg?size=256`}
@@ -44,3 +44,21 @@ import "@styles/pages/home/categories.scss";
         <p>Folhas</p>
     </div>
 </section>
+
+<script>
+    import { screen, Screen } from "./search/Search";
+    import { filter } from "./search/Search";
+
+    const categories = document.querySelectorAll<HTMLDivElement>(".categories .category")
+
+    for (const category_element of categories) {
+        category_element.addEventListener("click", () => {
+            const category = category_element.dataset.category
+
+            filter.set({ page: 1, per_page: 10, product_type: Number(category) })
+            setTimeout(() => {
+                screen.set(Screen.Menu)
+            }, 300) // avoid layout shift
+        })
+    }
+</script>

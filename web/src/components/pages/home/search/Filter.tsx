@@ -90,6 +90,12 @@ function StarDiv(props: { value: number }) {
 
     function setMinStars() {
         context.set_filter_preview((prev) => {
+            if(prev?.min_stars === props.value) {
+                delete prev.min_stars
+
+                return { ...prev }
+            }
+
             return { ...prev, min_stars: props.value }
         })
     }
@@ -133,7 +139,13 @@ function CategorySelector() {
 
     function setCategory(product_type: number) {
         context.set_filter_preview((prev) => {
-            return {...prev, product_type}
+            if(prev?.product_type !== undefined && (product_type === prev.product_type)) {
+                delete prev.product_type
+
+                return { ...prev }
+            } else {
+                return {...prev, product_type}
+            }
         })
     }
 
@@ -155,16 +167,38 @@ function CategorySelector() {
 
 function ValueRangeSelector() {
     const context = useContext(FilterContext)
+    const currentFilter = filter.get()
 
     function setMinValue(element: HTMLInputElement) {
         context.set_filter_preview((prev) => {
-            return {...prev, min_price: Number(element.value)}
+
+            const value = Number(element.value)
+
+            if(!value || value == 0) {
+                if(prev?.min_price) {
+                    delete prev.min_price
+                }
+
+                return { ...prev }
+            }
+
+            return {...prev, min_price: value}
         })
     }
 
     function setMaxValue(element: HTMLInputElement) {
         context.set_filter_preview((prev) => {
-            return {...prev, max_price: Number(element.value)}
+            const value = Number(element.value)
+
+            if(!value || value == 0) {
+                if(prev?.max_price) {
+                    delete prev.max_price
+                }
+
+                return { ...prev }
+            }
+
+            return {...prev, max_price: value}
         })
     }
 
@@ -172,11 +206,11 @@ function ValueRangeSelector() {
         <div className="value_inputs centered">
             <div>
                 <label htmlFor="min_value">Min: </label>
-                <input type="number" onChange={(e) => setMinValue(e.currentTarget)}></input>
+                <input type="number" onChange={(e) => setMinValue(e.currentTarget)} defaultValue={currentFilter?.min_price || ""}></input>
             </div>
             <div>
                 <label htmlFor="max_value">Max: </label>
-                <input type="number" onChange={(e) => setMaxValue(e.currentTarget)}></input>
+                <input type="number" onChange={(e) => setMaxValue(e.currentTarget)} defaultValue={currentFilter?.max_price || ""}></input>
             </div>
         </div>
     )
@@ -199,6 +233,12 @@ function DayOfWeekSelector() {
 
     function setDayOfWeek(day: number) {
         context.set_filter_preview((prev) => {
+            if(prev?.day_of_week === day) {
+                delete prev.day_of_week
+
+                return {...prev}
+            }
+
             return {...prev, day_of_week: day}
         })
     }
