@@ -61,9 +61,9 @@ export default function PaginatedProducts(props: {
 
     useEffect(() => {
         function checkResponsitivy() {
-            if(window.innerWidth <= 520 && window.innerWidth >= 420) {
+            if(window.innerWidth <= 520 && window.innerWidth >= 330) {
                 set_SLIDE_SIZE(2)
-            } else if(window.innerWidth <= 420) {
+            } else if(window.innerWidth <= 330) {
                 set_SLIDE_SIZE(1)
             } else if(window.innerWidth > 520) {
                 set_SLIDE_SIZE(original_SLIDE_SIZE)
