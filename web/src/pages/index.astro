@@ -25,32 +25,12 @@ export const prerender = false
     <Fragment slot="body">
         { session && !session.profile.is_seller && <CustomerHome /> }
         { !session && <Unsigned /> }
-    </Fragment>
-    <script>
-        /*import Session from "@stores/Session";
 
-        const navbar = document.querySelector<HTMLDivElement>(".navbar_container")
-        const Unsigned = document.querySelector<HTMLDivElement>("#unsigned")
-        const Home = document.querySelector<HTMLDivElement>("#home")
-
-        const value = Session.get()
-        
-        if(value) {
-            isUnsigned(false)
-        } else {
-            Session.listen((v) => {
-                isUnsigned(v === undefined)
-            })
+        { !session &&
+            <script define:vars={{ session }}>
+                const navbar = document.querySelector(".navbar_container")
+                navbar.hidden = true
+            </script>
         }
-
-        function isUnsigned(unsigned: boolean) {
-            if(unsigned) {
-                Unsigned.hidden = false
-            } else {
-                Home.hidden = false
-            }
-
-            navbar.hidden = unsigned
-        }*/
-    </script>
+    </Fragment>
 </BaseLayout>
