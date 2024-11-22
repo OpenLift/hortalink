@@ -6,7 +6,7 @@ export default function UserRating(props: { rating: IndividualRating }) {
     const totalStairs = 5
     const solidStars = props.rating.rating
 
-    const ratingDate = new Date(props.rating.created_at).toLocaleDateString("pt-br", { dateStyle: "short" })
+    const ratingDate = new Date(props.rating.created_at * 1000).toLocaleDateString("pt-br", { dateStyle: "short" })
 
     return (
         <div className="user_rating">
