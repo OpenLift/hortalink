@@ -7,6 +7,7 @@ import ProfileCard from "@components/pages/users/seller/ProfileCard";
 import Selector from "@components/pages/users/seller/Selector";
 import SellerProductsSection from "@components/pages/users/seller/sections/ProductsSection";
 import SellerSchedulesSection from "@components/pages/users/seller/sections/SchedulesSection";
+import SellerRatingsSection from "@components/pages/users/seller/sections/RatingsSection";
 import APIWrapper, { RequestAPIFrom } from "@HortalinkAPIWrapper";
 
 const api = new APIWrapper(RequestAPIFrom.Server)
@@ -16,11 +17,13 @@ const session = Astro.cookies.get("session_id")
 
 const requests = await Promise.all([
     api.getSeller(Number(seller_id), session.value),
-    api.getSellerSchedules(Number(seller_id), session.value)
+    api.getSellerSchedules(Number(seller_id), session.value),
+    api.getSellerRatings(Number(seller_id), 1, session.value)
 ])
 
 const seller = requests[0]
 const schedules = requests[1]
+const ratings = requests[2]
 ---
 
 <BaseLayout>
@@ -36,6 +39,7 @@ const schedules = requests[1]
             <Selector client:load />
             <SellerProductsSection seller={seller} client:load />
             <SellerSchedulesSection schedules={schedules} client:load />
+            <SellerRatingsSection ratings={ratings} client:load />
         </main>
     </Fragment>
 </BaseLayout>

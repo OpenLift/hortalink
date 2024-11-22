@@ -157,6 +157,40 @@ class APIWrapper<F extends RequestAPIFrom> {
         return data
     }
 
+    public async getSellerRatings(seller_id: number, page: number, session_id?: F extends RequestAPIFrom.Server ? string : never): Promise<IndividualRating[]> {
+        switch(this.from) {
+            case RequestAPIFrom.Server:
+                return await this.getSellersRatingsFromServer(seller_id, page, session_id);
+            break;
+            case RequestAPIFrom.Client:
+                return await this.getSellerRatingsFromClient(seller_id, page)
+        }
+    }
+
+    private async getSellerRatingsFromClient(seller_id: number, page: number,): Promise<IndividualRating[]> {
+        const params = new URLSearchParams()
+
+        params.append("page", page.toString())
+        params.append("per_page", "10")
+
+        const data = await RequestAPI(this.from, `/v1/sellers/${seller_id}/ratings`, params, "include") as IndividualRating[]
+
+        return data
+    }
+
+    private async getSellersRatingsFromServer(seller_id: number, page: number, session_id: string): Promise<IndividualRating[]> {
+        const params = new URLSearchParams()
+
+        params.append("page", page.toString())
+        params.append("per_page", "10")
+
+        const data = await RequestAPI(this.from, `/v1/sellers/${seller_id}/ratings`, params, "include", {
+            "Cookie": `session_id=${session_id}`
+        }) as IndividualRating[]
+
+        return data
+    }
+
     public async getCart(): Promise<Cart[]> {
         const data = await RequestAPI(this.from, `/v1/users/@me/cart`, undefined, "include") as Cart[]
 
