@@ -106,6 +106,11 @@ import { Image } from "astro:assets";
                 return
             }
 
+            if(password.toString().length < 8) {
+                warningsParagraph.textContent = "Senha deve conter ao menos 8 caracteres."
+                return
+            }
+
             if(!confirmPassword) {
                 warningsParagraph.textContent = "Confirme sua senha."
                 return
