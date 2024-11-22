@@ -17,6 +17,8 @@ pub struct ProductRatingInfo {
     content: String,
     #[sqlx(flatten)]
     user: PreviewUser,
+    #[sqlx(flatten)]
+    product: SellerProductMinimal,
 }
 
 #[derive(Serialize, sqlx::FromRow)]

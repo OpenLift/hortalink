@@ -14,7 +14,7 @@ export default function ResumedUserRating(props: { rating: IndividualRating }) {
             <div className="content resumed_rating">
                 <div className="header">
                     <div style={{ minWidth: "200px" }}>
-                        <h2>Product name</h2>
+                        <h2>{props.rating.product.name}</h2>
                         <p>{props.rating.user.name}</p>
                     </div>
                     <div>

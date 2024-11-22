@@ -25,10 +25,12 @@ pub async fn fetch_reviews(seller_id: i32, query: Pagination, pool: &Pool<Postgr
             SELECT
                 s.id, s.author_id, s.created_at, c.id AS user_id,
                 s.was_edited, s.rating, s.content, c.name AS user_name,
-                c.avatar AS user_avatar
+                c.avatar AS user_avatar, sp.id AS product_id, sp.id AS product_id,
+                 p.name AS product_name, sp.photos[1] AS photo
             FROM seller_product_ratings s
             JOIN users c ON s.author_id = c.id
             JOIN seller_products sp ON sp.id = s.seller_product_id
+            JOIN products p ON p.id = sp.product_id
             WHERE sp.seller_id = $1
             ORDER BY s.created_at DESC
             LIMIT $2 OFFSET $3
