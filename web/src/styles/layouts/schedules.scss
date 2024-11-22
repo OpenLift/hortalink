@@ -1,0 +1,52 @@
+@use "../colors";
+
+@mixin flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.seller_schedules {
+    @include flex();
+
+    gap: 0.8rem;
+    margin: auto;
+
+    .seller_schedule {
+        @include flex();
+        flex-direction: column;
+        gap: 1rem;
+
+        text-align: center;
+
+        padding: 10px;
+        background-color: rgba(1, 121, 75, 0.15);
+
+        h2 {
+            color: colors.$group1_color_2;
+        }
+
+        p {
+            color: colors.$group1_color_1;
+            font-weight: 600;
+        }
+
+        p.address {
+            font-weight: 700;
+            font-size: 1.05em;
+        }
+    }
+
+    .seller_schedule.end_week {
+        background-color: rgba(191, 148, 84, 0.30);
+
+        h2 {
+            color: colors.$group4_color_2;
+        }
+
+        p {
+            color: #9F6105;
+            font-weight: 600;
+        }
+    }
+}

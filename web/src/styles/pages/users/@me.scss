@@ -94,6 +94,7 @@ main {
 
         margin: auto;
         margin-top: 0.5rem;
+        margin-bottom: 1rem;
 
         border-bottom: 1px solid colors.$light_1;
         gap: 2.5rem;
@@ -166,4 +167,9 @@ main {
             }
         }
     }
+}
+
+.seller_products_section {
+    max-width: 540px;
+    margin: auto;
 }

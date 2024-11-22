@@ -83,6 +83,14 @@ interface FullRating {
     ratings: Rating[];
 }
 
+interface IndividualRating extends Rating {
+    product: {
+        id: number,
+        name: string
+        photo?: string
+    }
+}
+
 interface Cart {
     user: {
         id: number,
@@ -110,6 +118,7 @@ export type {
     DetailedProduct,
     ProductSeller,
     Rating,
+    IndividualRating,
     FullRating,
     Cart
 }

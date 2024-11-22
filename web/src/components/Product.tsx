@@ -22,7 +22,7 @@ export default function Product(props: { product: Product }) {
                 <h2>{productData.product.name}</h2>
                 <div className="star">
                     <div className="star_content">
-                        <Image
+                        <img
                             src="/assets/star.svg"
                             width={10}
                             height={10}
@@ -36,12 +36,12 @@ export default function Product(props: { product: Product }) {
             </div>
             <div className="product_image">
                 {productData.photo && 
-                <img 
-                    src={`${import.meta.env.PUBLIC_FRONTEND_CDN_URL}/products/${productData.id}/${productData.photo.replace("/", "⁄")}.jpg?size=256`}
-                    width={109}
-                    height={106}
-                    alt={`Foto do produto "${productData.product.name}"`}
-                />
+                    <img 
+                        src={`${import.meta.env.PUBLIC_FRONTEND_CDN_URL}/products/${productData.id}/${productData.photo.replace("/", "⁄")}.jpg?size=256`}
+                        width={109}
+                        height={106}
+                        alt={`Foto do produto "${productData.product.name}"`}
+                    />
                 }
             </div>
             <div className="product_footer">

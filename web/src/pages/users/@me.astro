@@ -6,6 +6,8 @@ import ProfileCard from "@components/pages/users/@me/ProfileCard";
 
 import Selector from "@components/pages/users/@me/Selector";
 import Orders from "@components/pages/users/@me/Orders";
+import APIWrapper, { RequestAPIFrom } from "@HortalinkAPIWrapper";
+import UserRatingsSection from "@components/pages/users/@me/sections/Ratings";
 ---
 
 <BaseLayout>
@@ -20,6 +22,7 @@ import Orders from "@components/pages/users/@me/Orders";
         <main>
             <Selector client:load />
             <Orders client:only="react" />
+            <UserRatingsSection client:load />
         </main>
     </Fragment>
 </BaseLayout>

@@ -1,7 +1,8 @@
 import type { User } from "@interfaces/User"
 import RequestAPI from "./APIFunctions/RequestAPI"
-import type { Cart, DetailedProduct, FullRating, Product, ProductFilter, ProductFullTextSearch } from "@interfaces/Product"
+import type { Cart, DetailedProduct, FullRating, IndividualRating, Product, ProductFilter, ProductFullTextSearch, Rating } from "@interfaces/Product"
 import type { Schedule } from "@interfaces/Schedule"
+import type { Seller } from "@interfaces/Seller"
 
 class APIWrapper<F extends RequestAPIFrom> {
     private from: F
@@ -122,6 +123,40 @@ class APIWrapper<F extends RequestAPIFrom> {
         return data
     }
 
+    public async getCustomerRatings(customer_id: number, page: number, session_id?: F extends RequestAPIFrom.Server ? string : never): Promise<IndividualRating[]> {
+        switch(this.from) {
+            case RequestAPIFrom.Server:
+                return await this.getCustomerRatingsFromServer(customer_id, page, session_id);
+            break;
+            case RequestAPIFrom.Client:
+                return await this.getCustomerRatingsFromClient(customer_id, page)
+        }
+    }
+
+    private async getCustomerRatingsFromClient(customer_id: number, page: number,): Promise<IndividualRating[]> {
+        const params = new URLSearchParams()
+
+        params.append("page", page.toString())
+        params.append("per_page", "10")
+
+        const data = await RequestAPI(this.from, `/v1/customers/${customer_id}/ratings`, params, "include") as IndividualRating[]
+
+        return data
+    }
+
+    private async getCustomerRatingsFromServer(customer_id: number, page: number, session_id: string): Promise<IndividualRating[]> {
+        const params = new URLSearchParams()
+
+        params.append("page", page.toString())
+        params.append("per_page", "10")
+
+        const data = await RequestAPI(this.from, `/v1/customers/${customer_id}/ratings`, params, "include", {
+            "Cookie": `session_id=${session_id}`
+        }) as IndividualRating[]
+
+        return data
+    }
+
     public async getCart(): Promise<Cart[]> {
         const data = await RequestAPI(this.from, `/v1/users/@me/cart`, undefined, "include") as Cart[]
 
@@ -147,6 +182,21 @@ class APIWrapper<F extends RequestAPIFrom> {
         const data = await RequestAPI(this.from, `/v1/sellers/${seller_id}/schedules`, undefined, "include", {
             "Cookie": `session_id=${session_id}`
         }) as Schedule[]
+
+        return data
+    }
+
+    public async getSeller(seller_id: number, session_id: F extends RequestAPIFrom.Server ? string : never): Promise<Seller> {
+        switch (this.from) {
+            case RequestAPIFrom.Server:
+                return await this.getSellerFromServer(seller_id, session_id)
+        }
+    }
+
+    private async getSellerFromServer(seller_id: number, session_id: string) {
+        const data = await RequestAPI(this.from, `/v1/users/${seller_id}`, undefined, "include", {
+            "Cookie": `session_id=${session_id}`
+        }) as Seller
 
         return data
     }
