@@ -4,8 +4,6 @@ import Session from "@stores/Session"
 export default function ProfileCard() {
     const sessionData = useStore(Session)
 
-    console.log(sessionData)
-
     return (
         <div className="profile_card">
             <div className="img_container">

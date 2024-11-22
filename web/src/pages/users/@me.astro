@@ -17,7 +17,7 @@ import UserRatingsSection from "@components/pages/users/@me/sections/Ratings";
     <Fragment slot="body">
         <header>
             <div class="background" />
-            <ProfileCard client:only="react" />
+            <ProfileCard client:load />
         </header>
         <main>
             <Selector client:load />
