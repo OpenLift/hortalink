@@ -6,8 +6,16 @@ import { atom } from "nanostores";
 type SearchFilter = WritableAtom<ProductFilter>
 interface ProductSelector {
     product_name: string,
-    product_id: number
+    product_id: number,
+    onlySeller: boolean
 }
+
+interface UserResults {
+    id: number
+    name: string
+    avatar: string
+}
+
 enum Screen {
     Home = 1,
     Menu,
@@ -18,10 +26,12 @@ const filter = atom<ProductFilter>()
 const screen = atom<Screen>(Screen.Home)
 const product_names = atom<ProductSelector[]>([])
 const products_result = atom<Product[]>([])
+const query = atom<string>("")
 
 export type {
     SearchFilter,
-    ProductSelector
+    ProductSelector,
+    UserResults
 }
 
 export {
@@ -29,5 +39,6 @@ export {
     screen,
     Screen,
     product_names,
-    products_result
+    products_result,
+    query
 }

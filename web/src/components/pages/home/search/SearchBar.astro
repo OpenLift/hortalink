@@ -59,10 +59,20 @@ import FilterIcon from "./Filter";
         const query = input.value
         const searchResults = await wrapper.search(query, 1, 10)
         const results: ProductSelector[] = searchResults.map((r) => {
-            return { product_name: r.product_name, product_id: r.product_id }
+            return { product_name: r.product_name, product_id: r.product_id, onlySeller: false }
         })
 
-        product_names.set(results)
+        const search_only_users = {
+            product_name: query,
+            product_id: -1,
+            onlySeller: true
+        }
+
+        if(query.length >= 3) {
+            product_names.set([search_only_users, ...results])
+        } else {
+            product_names.set(results)
+        }
     }
 
     input?.addEventListener("input", (e) => {

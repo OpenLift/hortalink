@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import type { Product as ProductT } from "@interfaces/Product";
 
 import APIWrapper, { RequestAPIFrom } from "@HortalinkAPIWrapper";
-import { filter } from "../Search";
+import { filter, query } from "../Search";
+import type { UserResults } from "../Search";
 import { products_result } from "../Search"
 
 import ProductsColumn from "@layouts/ProductsColumn";
@@ -36,15 +37,63 @@ function ProductResults(props: { products: ProductT[] }) {
     )
 }
 
+function SellerResults(props: { users: UserResults[] }) {
+
+    if(!props.users.length) {
+        return (
+            <p className="noresult">Nenhum resultado.</p>
+        )
+    }
+
+    return (
+        <div className="users_results">
+            {
+                props.users.map(user => (
+                    <a className="user_result" href={`/sellers/${user.id}`} key={`users-result-${user.id}`}>
+                        <div className="user_img">
+                            <img
+                                src={`${import.meta.env.PUBLIC_FRONTEND_CDN_URL}/avatars/${user.id}/${user.avatar}.png?size=128`}
+                                width={78}
+                                height={78}
+                                alt="Sua foto de perfil"
+                            />
+                        </div>
+                        <div className="user_data">
+                            <h2>{user.name}</h2>
+                            <div className="user_rating">
+                                <img
+                                    src="/assets/star.svg"
+                                    width={17}
+                                    height={17}
+                                />
+                                <p>4,5</p>
+                            </div>
+                        </div>
+                    </a>
+                ))
+            }
+        </div>
+    )
+}
+
 export default function Results() {
     const api = new APIWrapper(RequestAPIFrom.Client)
-    const [products, setProducts] = useState<ProductT[]>([])
+    const [products, setProducts] = useState<ProductT[]>(() => []) // avoid reassign on re-render
+    const [users, setUsers] = useState<UserResults[]>(() => [])
     const [resultType, setResultType] = useState<ResultType>(ResultType.Products)
 
     useEffect(() => {
         filter.listen(async v => {
-            const newData = await api.getProducts(v)
-            setProducts(newData)
+            if(v.product_id !== -1) {
+                const newData = await api.getProducts(v)
+                setProducts(newData)
+            }
+        })
+
+        query.listen(async q => {
+            const newData = await api.searchUsers(q, 1, 10)
+            setUsers(newData)
+            setResultType(ResultType.Users)
         })
     }, [])
 
@@ -92,7 +141,7 @@ export default function Results() {
                     resultType === ResultType.Products && <ProductResults products={products} />
                 }
                 {
-                    resultType === ResultType.Users && <p>TODO</p>
+                    resultType === ResultType.Users && <SellerResults users={users} />
                 }
             </div>
         </>

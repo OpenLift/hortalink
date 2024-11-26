@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { filter, product_names, products_result, Screen, screen } from "./Search";
+import { filter, product_names, products_result, query, Screen, screen } from "./Search";
 import { useStore } from "@nanostores/react";
 
 export default function SearchBarResults() {
@@ -11,6 +11,12 @@ export default function SearchBarResults() {
         const newValue = { ...currentValue, product_id: product_type }
 
         filter.set(newValue)
+        screen.set(Screen.Results)
+        setIsOnSelect(true)
+    }
+
+    function updateUsersQuery(usersquery: string) {
+        query.set(usersquery)
         screen.set(Screen.Results)
         setIsOnSelect(true)
     }
@@ -59,8 +65,10 @@ export default function SearchBarResults() {
         <div className="results_selector" role="listbox" aria-expanded={true}>
             {
                 !isOnSelect && results.map((result) => (
-                    <div className="results_option" key={`search-result-${result.product_id}`} onClick={() => { updateFilter(result.product_id) }} role="option" data-value={result.product_id} tabIndex={0}>
+                    <div className="results_option" key={`search-result-${result.product_id}`} onClick={() => { result.onlySeller ? updateUsersQuery(result.product_name) : updateFilter(result.product_id) }} role="option" data-value={result.product_id} tabIndex={0}>
                         {result.product_name}
+                        <br />
+                        <span style={{ fontSize: "0.9em", color: "#AFAFAF" }}>{result.onlySeller ? 'Pesquisar em usuários' : 'Pesquisar em produtos'}</span>
                     </div>
                 ))
             }

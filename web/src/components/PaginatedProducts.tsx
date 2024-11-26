@@ -27,7 +27,7 @@ export default function PaginatedProducts(props: {
 
     async function Prev() {
         if(start_pos >= 1) {
-            set_start_pos(start_pos - 1)
+            set_start_pos(Math.max(0, start_pos - SLIDE_SIZE))
         }
     }
 

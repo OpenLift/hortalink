@@ -3,6 +3,7 @@ import RequestAPI from "./APIFunctions/RequestAPI"
 import type { Cart, DetailedProduct, FullRating, IndividualRating, Product, ProductFilter, ProductFullTextSearch, Rating } from "@interfaces/Product"
 import type { Schedule } from "@interfaces/Schedule"
 import type { Seller } from "@interfaces/Seller"
+import type { UserResults } from "@components/pages/home/search/Search"
 
 class APIWrapper<F extends RequestAPIFrom> {
     private from: F
@@ -72,6 +73,18 @@ class APIWrapper<F extends RequestAPIFrom> {
         }
 
         const data = await RequestAPI(this.from, "/v1/products", searchParams, "include") as Product[]
+        return data
+    }
+
+    public async searchUsers(query: string, page: number, per_page: number) {
+        const searchParams = new URLSearchParams()
+
+        searchParams.set("page", page.toString())
+        searchParams.set("per_page", per_page.toString())
+        searchParams.set("query", query)
+        
+        const data = await RequestAPI(this.from, "/v1/users", searchParams, "include") as UserResults[]
+
         return data
     }
     

@@ -39,6 +39,61 @@
     }
 }
 
+.users_results {
+    @include flex();
+    flex-direction: column;
+    align-items: center;
+
+    gap: 1.5rem;
+
+    .user_result {
+        @include flex();
+        justify-content: flex-start;
+        align-items: flex-start;
+
+        gap: 1rem;
+
+        width: 100%;
+        max-width: 400px;
+
+        text-decoration: none;
+        color: #262626;
+
+        .user_img {
+            width: 78px;
+            height: 78px;
+
+            border-radius: 50%;
+            overflow: hidden;
+
+            img {
+                object-fit: cover;
+            }
+        }
+
+        .user_data {
+            h2 {
+                font-size: 1.12em;
+    
+                text-transform: capitalize;
+            }
+    
+            .user_rating {
+                @include flex();
+                justify-content: flex-start;
+                color: colors.$light_1;
+    
+                gap: 0.3rem;
+    
+                p {
+                    font-size: 0.8em;
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+}
+
 .noresult {
     text-align: center;
     color: scale-color($color: colors.$mid_1, $alpha: -60%);
