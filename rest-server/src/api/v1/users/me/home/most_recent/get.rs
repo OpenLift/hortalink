@@ -29,7 +29,7 @@ pub async fn fetch(
                 SELECT sp.id, p.id AS product_id, p.name,
                     sp.photos[1] AS photo, sp.price, sp.unit_quantity,
                     COALESCE(CAST(sp.rating_sum AS FLOAT) / CAST(NULLIF(sp.rating_quantity, 0) AS FLOAT), NULL) AS rating,
-                    sp.rating_quantity, sp.unit, sp.seller_id
+                    sp.rating_quantity, sp.unit
                 FROM products_seen_recently sr
                 LEFT JOIN seller_products sp ON sp.id = sr.seller_product_id
                 JOIN products p ON sp.product_id = p.id

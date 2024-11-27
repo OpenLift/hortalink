@@ -21,7 +21,13 @@ pub struct PreviewUser {
     #[sqlx(rename = "user_name")]
     name: String,
     #[sqlx(rename = "user_avatar")]
-    avatar: Option<String>
+    avatar: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[sqlx(default)]
+    followers: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[sqlx(default)]
+    orders_received: Option<i32>
 }
 
 #[derive(sqlx::FromRow, Serialize)]

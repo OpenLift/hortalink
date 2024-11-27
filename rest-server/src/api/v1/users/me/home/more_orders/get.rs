@@ -24,7 +24,7 @@ pub async fn fetch(
             SELECT sp.id, p.id AS product_id, p.name,
                 sp.photos[1] AS photo, sp.price, sp.unit_quantity,
                 COALESCE(CAST(sp.rating_sum AS FLOAT) / CAST(NULLIF(sp.rating_quantity, 0) AS FLOAT), NULL) AS rating,
-                sp.rating_quantity, sp.unit, sp.seller_id,
+                sp.rating_quantity, sp.unit,
                 SUM(c.amount) AS total
             FROM cart c
             JOIN seller_products sp ON c.seller_product_id = sp.id

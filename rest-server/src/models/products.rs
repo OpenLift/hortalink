@@ -24,7 +24,10 @@ pub struct SellerProduct {
     description: Option<String>,
     #[serde(serialize_with = "serialize_unit")]
     unit: i16,
-    unit_quantity: f32
+    unit_quantity: f32,
+    #[serde(skip_serializing)]
+    #[sqlx(default)]
+    pub seller_id: Option<i32>
 }
 
 #[derive(sqlx::FromRow, Serialize)]
@@ -41,7 +44,6 @@ pub struct SellerProductPreview {
     #[serde(serialize_with = "serialize_unit")]
     unit: i16,
     unit_quantity: Option<f32>,
-    seller_id: i32
 }
 
 #[derive(sqlx::FromRow, Serialize)]
