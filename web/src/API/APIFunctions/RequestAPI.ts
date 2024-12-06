@@ -1,6 +1,16 @@
 import { RequestAPIFrom } from "../Wrapper";
 
-function RequestAPI(from: RequestAPIFrom, path: string, searchParams?: URLSearchParams, credentials: RequestCredentials = "omit", headers?: HeadersInit): Promise<unknown> {
+async function automaticallyParseResponse(request: Response) {
+    const type = request.headers.get("content-type")
+
+    if(type && type === "application/json") {
+        return await request.json()
+    } else {
+        return await request.text()
+    }
+}
+
+function RequestAPI(from: RequestAPIFrom, path: string, searchParams?: URLSearchParams, credentials: RequestCredentials = "omit", headers?: HeadersInit, method: string = "GET", body?: BodyInit): Promise<unknown> {
     return new Promise(async (resolve, reject) => {
         let base_url: string;
 
@@ -21,15 +31,17 @@ function RequestAPI(from: RequestAPIFrom, path: string, searchParams?: URLSearch
     
         const request = await fetch(`${base_url}${path}${params}`, {
             credentials: credentials,
-            headers: headers
+            headers: headers,
+            method: method,
+            body: body
         })
     
         if(!request.ok) {
-            const response = await request.text()
+            const response = await automaticallyParseResponse(request)
             return reject(response)
         }
     
-        const response = await request.json()
+        const response = await automaticallyParseResponse(request)
     
         resolve(response)
     })    

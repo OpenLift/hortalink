@@ -1,0 +1,30 @@
+@use "../../../colors";
+
+@mixin flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+header {
+    width: 100%;
+    margin: auto;
+
+    margin-top: 2rem;
+
+    h1 {
+        text-align: center;
+        font-size: 1.563em;
+
+        color: #262626
+    }
+}
+
+main {
+    margin-top: 2rem;
+}
+
+.line {
+    width: 100%;
+    max-width: 430px !important;
+}

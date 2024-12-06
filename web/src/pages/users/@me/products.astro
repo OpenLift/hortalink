@@ -1,0 +1,34 @@
+---
+import "@styles/pages/users/@me/products.scss";
+
+import BaseLayout from "@layouts/BaseLayout.astro";
+import SellerProductsHeader from "@components/pages/users/@me/products/SellerProductsHeader.astro";
+
+import APIWrapper, { RequestAPIFrom } from "@HortalinkAPIWrapper";
+import SellerProductsList from "@components/pages/users/@me/products/SellerProductsList.astro";
+
+const wrapper = new APIWrapper(RequestAPIFrom.Server)
+
+const session_cookie = Astro.cookies.get("session_id")
+const session_id = session_cookie?.value || null
+
+const session = session_id ? await wrapper.getCurrentSession(session_id) : null
+const products = session && session.profile.is_seller ? await wrapper.getSellerProducts(session.profile.id, 1, session_id) : []
+
+console.log(products)
+
+export const prerender = false
+---
+
+<BaseLayout>
+    <Fragment slot="head">
+        <title>Hortalink | Lista de produtos</title>
+    </Fragment>
+    <Fragment slot="body">
+        <SellerProductsHeader />
+        <div class="line" />
+        <main>
+            <SellerProductsList products={products} />
+        </main>
+    </Fragment>
+</BaseLayout>

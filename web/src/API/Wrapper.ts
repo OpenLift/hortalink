@@ -88,10 +88,22 @@ class APIWrapper<F extends RequestAPIFrom> {
         return data
     }
     
-    public async search(query: string, page: number = 1, per_page: number = 10): Promise<ProductFullTextSearch[]> {
+    public async search(query?: string, page: number = 1, per_page: number = 10, session_id?: F extends RequestAPIFrom.Server ? string : never): Promise<ProductFullTextSearch[]> {
+        switch (this.from) {
+            case RequestAPIFrom.Client:
+                return await this.searchFromClient(query, page, per_page)
+                break;
+            case RequestAPIFrom.Server:
+                return await this.searchFromServer(query || "", page, per_page, session_id)
+        }
+    }
+
+    private async searchFromClient(query?: string, page: number = 1, per_page: number = 10) {
         const searchParams = new URLSearchParams()
     
-        searchParams.append("query", query)
+        if(query) {
+            searchParams.append("query", query)
+        }
         searchParams.append("page", String(page))
         searchParams.append("per_page", String(per_page))
     
@@ -100,16 +112,32 @@ class APIWrapper<F extends RequestAPIFrom> {
         return types
     }
 
-    public async getProduct(seller_id: number, product_id: number, session_id?: F extends RequestAPIFrom.Server ? string : never): Promise<DetailedProduct> {
+    private async searchFromServer(query: string, page: number, per_page: number, session_id: string): Promise<ProductFullTextSearch[]> {
+        const searchParams = new URLSearchParams()
+    
+        if(query.length) {
+            searchParams.append("query", query)
+        }
+        searchParams.append("page", String(page))
+        searchParams.append("per_page", String(per_page))
+    
+        const types = await RequestAPI(this.from, "/v1/resources/products", searchParams, undefined, {
+            "Cookie": `session_id=${session_id}`
+        }) as ProductFullTextSearch[]
+    
+        return types
+    }
+
+    public async getProduct(product_id: number, session_id?: F extends RequestAPIFrom.Server ? string : never): Promise<DetailedProduct> {
         switch(this.from) {
             case RequestAPIFrom.Server:
-                return await this.getProductFromServer(seller_id, product_id, session_id);
+                return await this.getProductFromServer(product_id, session_id);
             
         }
     }
 
-    private async getProductFromServer(seller_id: number, product_id: number, session_id: string): Promise<DetailedProduct> {
-        const data = await RequestAPI(this.from, `/v1/sellers/${seller_id}/products/${product_id}`, null, "include", {
+    private async getProductFromServer(product_id: number, session_id: string): Promise<DetailedProduct> {
+        const data = await RequestAPI(this.from, `/v1/products/${product_id}`, null, "include", {
             "Cookie": `session_id=${session_id}`
         })
 
@@ -204,6 +232,40 @@ class APIWrapper<F extends RequestAPIFrom> {
         return data
     }
 
+    public async getSellerProducts(seller_id: number, page: number, session_id?: F extends RequestAPIFrom.Server ? string : never): Promise<Product[]> {
+        switch(this.from) {
+            case RequestAPIFrom.Server:
+                return await this.getSellersProductsFromServer(seller_id, page, session_id);
+            break;
+            case RequestAPIFrom.Client:
+                return await this.getSellerProductsFromClient(seller_id, page)
+        }
+    }
+
+    private async getSellerProductsFromClient(seller_id: number, page: number,): Promise<Product[]> {
+        const params = new URLSearchParams()
+
+        params.append("page", page.toString())
+        params.append("per_page", "10")
+
+        const data = await RequestAPI(this.from, `/v1/sellers/${seller_id}/products`, params, "include") as Product[]
+
+        return data
+    }
+
+    private async getSellersProductsFromServer(seller_id: number, page: number, session_id: string): Promise<Product[]> {
+        const params = new URLSearchParams()
+
+        params.append("page", page.toString())
+        params.append("per_page", "10")
+
+        const data = await RequestAPI(this.from, `/v1/sellers/${seller_id}/products`, params, "include", {
+            "Cookie": `session_id=${session_id}`
+        }) as Product[]
+
+        return data
+    }
+
     public async getCart(): Promise<Cart[]> {
         const data = await RequestAPI(this.from, `/v1/users/@me/cart`, undefined, "include") as Cart[]
 
@@ -245,6 +307,18 @@ class APIWrapper<F extends RequestAPIFrom> {
             "Cookie": `session_id=${session_id}`
         }) as Seller
 
+        return data
+    }
+
+    async createProduct(seller_id: number, productData: FormData) {
+        const data = await RequestAPI(this.from, `/v1/sellers/${seller_id}/products`, undefined, "include", undefined, "POST", productData)
+        
+        return data
+    }
+
+    async editProduct(seller_id: number, product_id, productData: FormData) {
+        const data = await RequestAPI(this.from, `/v1/sellers/${seller_id}/products/${product_id}`, undefined, "include", undefined, "PATCH", productData)
+        
         return data
     }
 }

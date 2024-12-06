@@ -1,0 +1,19 @@
+---
+import SelectionProducts from "@layouts/SelectionProducts";
+import SelectionProduct from "@components/SelectionProduct";
+import type { Product } from "@interfaces/Product";
+
+interface Props {
+    products: Product[]
+}
+
+const products = Astro.props.products
+---
+
+<SelectionProducts>
+    {
+        products.map((product) => (
+            <SelectionProduct product={product} />
+        ))
+    }
+</SelectionProducts>

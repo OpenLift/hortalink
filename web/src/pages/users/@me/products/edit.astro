@@ -1,0 +1,35 @@
+---
+import "@styles/pages/users/@me/products.scss";
+
+import BaseLayout from "@layouts/BaseLayout.astro";
+import SellerProductsEditHeader from "@components/pages/users/@me/products/edit/SellerProductsEditHeader.astro";
+import SellerProductsEditForm from "@components/pages/users/@me/products/edit/SellerProductsEditForm";
+
+import APIWrapper, { RequestAPIFrom } from "@HortalinkAPIWrapper";
+
+const wrapper = new APIWrapper(RequestAPIFrom.Server)
+
+const session_cookie = Astro.cookies.get("session_id")
+const session_id = session_cookie?.value || null
+
+const session = session_id ? await wrapper.getCurrentSession(session_id) : null
+const categories = await wrapper.search(undefined, 1, 100, session_id)
+
+const product_id = Astro.url.searchParams.get("product_id") || null
+const product = (product_id && session_id) ? await wrapper.getProduct(Number(product_id), session_id) : null
+
+export const prerender = false
+---
+
+<BaseLayout>
+    <Fragment slot="header">
+        <title>Hortalink | Cadastrar Produto</title>
+    </Fragment>
+    <Fragment slot="body">
+        <SellerProductsEditHeader is_edit={product_id !== null} />
+        <div class="line" />
+        <main>
+            <SellerProductsEditForm seller_id={session?.profile?.id} categories={categories} product={product?.product} client:load />
+        </main>
+    </Fragment>
+</BaseLayout>

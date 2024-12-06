@@ -1,0 +1,15 @@
+---
+interface Props {
+    is_edit: boolean    
+}
+
+const is_edit = Astro.props.is_edit
+---
+
+<header>
+    <h1>
+        {
+            is_edit ? "Editar Produto" : "Novo Produto"
+        }
+    </h1>
+</header>
