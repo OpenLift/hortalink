@@ -22,7 +22,6 @@ export default function UserRating(props: { rating: IndividualRating }) {
                 <div className="header">
                     <div>
                         <h2>{productData.name}</h2>
-                        <p>Seller name</p>
                     </div>
                     <div>
                         <div className="stairs">

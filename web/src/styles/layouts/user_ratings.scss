@@ -28,7 +28,7 @@
         .content {
             .header {
                 @include flex();
-                align-items: center;
+                align-items: flex-start;
 
                 gap: 1.2rem;
                 text-transform: capitalize;
@@ -39,7 +39,8 @@
                     font-size: 1em;
                     text-transform: capitalize;
 
-                    color: #262626
+                    color: #262626;
+                    min-width: 100px;
                 }
 
                 p {
