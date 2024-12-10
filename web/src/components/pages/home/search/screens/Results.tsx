@@ -61,12 +61,10 @@ function SellerResults(props: { users: UserResults[] }) {
                         <div className="user_data">
                             <h2>{user.name}</h2>
                             <div className="user_rating">
-                                <img
-                                    src="/assets/star.svg"
-                                    width={17}
-                                    height={17}
-                                />
-                                <p>4,5</p>
+                                <p style={{ marginTop: "0.3rem" }}>
+                                    {user?.followers || 0} seguidores <br />
+                                    {user?.orders_received || 0} ordens recebidas
+                                </p>
                             </div>
                         </div>
                     </a>

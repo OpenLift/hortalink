@@ -13,7 +13,9 @@ interface ProductSelector {
 interface UserResults {
     id: number
     name: string
-    avatar: string
+    avatar: string,
+    followers: number,
+    orders_received: number
 }
 
 enum Screen {
