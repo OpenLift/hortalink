@@ -27,10 +27,10 @@ pub async fn product(
 
     let mut tx = state.pool.begin().await?;
 
-    let id = sqlx::query_scalar::<_, i32>(
+    let id = sqlx::query_scalar::<_, i64>(
         r#"
-            INSERT INTO seller_products (product_id, seller_id, price, quantity, unit, unit_quantity, description)
-            VALUES ($1, $2, $3, $4, $5, $6)
+            INSERT INTO seller_products (product_id, seller_id, price, quantity, unit, unit_quantity, description, photos)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, '{}')
             RETURNING id
         "#
     )

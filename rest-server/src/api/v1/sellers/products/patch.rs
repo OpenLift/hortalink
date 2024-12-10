@@ -36,8 +36,8 @@ pub async fn product(
             UPDATE seller_products
             SET price = COALESCE($1, price), 
                 quantity = COALESCE($2, quantity),
-                unit = COALESCE($3, unit)
-                unit_quantity = COALESCE($4, unit_quantity)
+                unit = COALESCE($3, unit),
+                unit_quantity = COALESCE($4, unit_quantity),
                 description = COALESCE($5, description)
             WHERE product_id = $4
         "#
