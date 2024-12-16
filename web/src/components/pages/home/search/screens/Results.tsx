@@ -11,6 +11,8 @@ import { products_result } from "../Search"
 import ProductsColumn from "@layouts/ProductsColumn";
 import ProductColumn from "@components/ProductColumn";
 import { useStore } from "@nanostores/react";
+import ScreenSelectorLayout from "@layouts/common/ScreenSelectorLayout";
+import ScreenSelector from "@components/common/ScreenSelector";
 
 enum ResultType {
     Products = 1,
@@ -113,28 +115,10 @@ export default function Results() {
     return (
         <>
             <div className="search_products_container">
-                <div className="result_type_selector">
-                    <p
-                        tabIndex={0}
-                        data-type={ResultType.Products}
-                        className={`result_type_option ${resultType === ResultType.Products ? "selected" : ""}`}
-                        onClick={() => {
-                            setResultType(ResultType.Products)
-                        }}
-                    >
-                        Produtos
-                    </p>
-                    <p
-                        tabIndex={0}
-                        data-type={ResultType.Users}
-                        className={`result_type_option ${resultType === ResultType.Users ? "selected" : ""}`}
-                        onClick={() => {
-                            setResultType(ResultType.Users)
-                        }}
-                    >
-                        Usuários
-                    </p>
-                </div>
+                <ScreenSelectorLayout currentPage={resultType} setCurrentPage={setResultType}>
+                    <ScreenSelector pageName={ResultType.Products} text="Produtos" />
+                    <ScreenSelector pageName={ResultType.Users} text="Usuários" />
+                </ScreenSelectorLayout>
                 {
                     resultType === ResultType.Products && <ProductResults products={products} />
                 }
