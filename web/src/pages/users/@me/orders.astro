@@ -1,3 +1,32 @@
 ---
+import "@styles/pages/users/@me/orders.scss";
 
+import BaseLayout from "@layouts/BaseLayout.astro";
+import SellerOrdersHeader from "@components/pages/users/@me/orders/SellerOrdersHeader.astro";
+
+import APIWrapper, { RequestAPIFrom } from "@HortalinkAPIWrapper";
+import SellerProductsList from "@components/pages/users/@me/products/SellerProductsList.astro";
+
+const wrapper = new APIWrapper(RequestAPIFrom.Server)
+
+const session_cookie = Astro.cookies.get("session_id")
+const session_id = session_cookie?.value || null
+
+const session = session_id ? await wrapper.getCurrentSession(session_id) : null
+
+
+export const prerender = false
 ---
+
+<BaseLayout>
+    <Fragment slot="head">
+        <title>Hortalink | Lista de pedidos do vendedor</title>
+    </Fragment>
+    <Fragment slot="body">
+        <SellerOrdersHeader />
+        <div class="line" />
+        <main>
+            
+        </main>
+    </Fragment>
+</BaseLayout>

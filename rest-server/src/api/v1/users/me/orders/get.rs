@@ -27,7 +27,7 @@ pub async fn orders(
             JOIN products p ON sp.product_id = p.id
             JOIN users u ON c.customer_id = u.id
             WHERE sp.seller_id = 17 AND c.status = 2 OR c.status = 3 OR c.status = 4
-            GROUP BY u.name, u.avatar, c.customer_id
+            GROUP BY u.name, u.avatar, c.customer_id, c.created_at
             ORDER BY c.created_at DESC;
         "#
     )
