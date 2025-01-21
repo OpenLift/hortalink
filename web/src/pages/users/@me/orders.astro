@@ -5,7 +5,7 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import SellerOrdersHeader from "@components/pages/users/@me/orders/SellerOrdersHeader.astro";
 
 import APIWrapper, { RequestAPIFrom } from "@HortalinkAPIWrapper";
-import SellerProductsList from "@components/pages/users/@me/products/SellerProductsList.astro";
+import OrdersList from "@components/pages/users/@me/orders/OrdersList";
 
 const wrapper = new APIWrapper(RequestAPIFrom.Server)
 
@@ -26,7 +26,7 @@ export const prerender = false
         <SellerOrdersHeader />
         <div class="line" />
         <main>
-            
+            <OrdersList client:load />
         </main>
     </Fragment>
 </BaseLayout>
