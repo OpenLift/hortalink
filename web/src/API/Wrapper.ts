@@ -321,6 +321,14 @@ class APIWrapper<F extends RequestAPIFrom> {
         
         return data
     }
+
+    async getOrder(orderId: string, session_id: string) {
+        const data = await RequestAPI(this.from, `/v1/users/@me/orders/${orderId}`, undefined, "include", {
+            "Cookie": `session_id=${session_id}`
+        })
+        
+        return data
+    }
 }
 
 

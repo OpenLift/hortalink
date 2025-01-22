@@ -89,7 +89,7 @@ function ProductImages() {
 }
 
 export default function SellerProductsEditForm(props: { seller_id: number, product?: Product, categories: ProductFullTextSearch[] }) {
-    const editMode = !(props.product === null)
+    const editMode = !(props.product === undefined || props.product === null)
     
     const imagesHref = useRef<ProductImage[]>(props.product?.photos.map(p => {
         return {
