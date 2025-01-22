@@ -20,7 +20,8 @@ pub async fn orders(
                     'product_id', sp.id,
                     'photo', sp.photos[1],
                     'product_name', p.name,
-                    'unit', sp.unit
+                    'unit', sp.unit,
+                    'status', c.status
                 )) AS products
             FROM cart c
             JOIN seller_products sp ON c.seller_product_id = sp.id
@@ -68,12 +69,13 @@ pub async fn order(
                        'product_id', sp.id,
                        'photo', sp.photos[1],
                        'product_name', p.name,
-                       'unit', sp.unit
+                       'unit', sp.unit,
+                       'status', c.status
                    )) AS products
             FROM cart c
             JOIN seller_products sp ON c.seller_product_id = sp.id
             JOIN products p ON sp.product_id = p.id
-            JOIN users u ON (c.customer_id = $2 AND u.id = sp.seller_id) OR (sp.seller_id = $2 AND u.id = c.customer_id)
+            JOIN users u ON c.customer_id = u.id
             LEFT JOIN withdrawn_data wd ON wd.cart_id = c.id
             WHERE c.id = $1
             GROUP BY u.name, u.avatar, u.id, c.created_at
