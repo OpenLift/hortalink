@@ -59,7 +59,7 @@ pub async fn order(
                 LEFT JOIN places pl ON s.place = pl.id
                 GROUP BY c.id
             )
-            SELECT u.name, u.avatar, c.customer_id AS user_id,
+            SELECT u.name, u.avatar, u.id AS user_id,
                    json_agg(json_build_object(
                        'order_id', c.id,
                        'withdrawn', wd.withdrawn,
@@ -73,10 +73,10 @@ pub async fn order(
             FROM cart c
             JOIN seller_products sp ON c.seller_product_id = sp.id
             JOIN products p ON sp.product_id = p.id
-            JOIN users u ON c.customer_id = u.id
+            JOIN users u ON (c.customer_id = $2 AND u.id = sp.seller_id) OR (sp.seller_id = $2 AND u.id = c.customer_id)
             LEFT JOIN withdrawn_data wd ON wd.cart_id = c.id
             WHERE c.id = $1
-            GROUP BY u.name, u.avatar, c.customer_id, c.created_at
+            GROUP BY u.name, u.avatar, u.id, c.created_at
             ORDER BY c.created_at DESC;
         "#
     )
