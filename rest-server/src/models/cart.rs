@@ -11,7 +11,7 @@ use sqlx::{Pool, Postgres};
 pub struct Order {
     #[sqlx(flatten)]
     user: UserPreview,
-    products: sqlx::types::Json<Vec<ProductPreview>>,
+    products: sqlx::types::JsonValue,
 }
 
 #[derive(sqlx::FromRow, Serialize)]
@@ -36,7 +36,7 @@ struct UserPreview {
 #[derive(sqlx::FromRow, Serialize, Deserialize)]
 struct ProductPreview {
     order_id: i64,
-    withdrawn: i64,
+    withdrawn: sqlx::types::Json<ProductWithdrawn>,
     amount: i32,
     product_id: i64,
     product_name: String,
@@ -45,6 +45,15 @@ struct ProductPreview {
     photo: String,
     #[serde(serialize_with = "serialize_unit")]
     unit: i16,
+}
+
+#[derive(sqlx::FromRow, Serialize, Deserialize)]
+struct ProductWithdrawn {
+    id: i64,
+    start_time: i64,
+    end_time: i64,
+    day_of_week: i16,
+    address: String,
 }
 
 impl Order {
