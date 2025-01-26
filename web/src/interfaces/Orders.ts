@@ -23,6 +23,7 @@ interface SellerOrderProduct {
     order_id: number,
     photo: string,
     price: number,
+    status: number,
     product_id: number,
     product_name: string,
     unit: number,

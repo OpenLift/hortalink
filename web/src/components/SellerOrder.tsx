@@ -1,12 +1,12 @@
 import type { SellerOrder } from "@interfaces/Orders";
 
-export default function SellerOrder(props: { order: SellerOrder }) {
+export default function SellerOrder(props: { order: SellerOrder, id: number }) {
     return (
         <div className="order">
             <div className="order_part">
                 <div>
-                    <h2 className="order_title">Pedido 22</h2>
-                    <p className="order_author">Cliente: Maia Fernandes</p>
+                    <h2 className="order_title">Pedido {props.id}</h2>
+                    <p className="order_author">Cliente: {props.order.user.id}</p>
                 </div>
                 <p className="order_date">20/11 17:05</p>
             </div>
