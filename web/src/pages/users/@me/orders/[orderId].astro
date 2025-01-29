@@ -31,6 +31,6 @@ if(!product) {
     <Fragment slot="body">
         <SellerOrderHeader />
         <div class="line" />
-        <SellerOrderData product={product} fullOrder={order} />
+        <SellerOrderData product={product} fullOrder={order} client:load />
     </Fragment>
 </BaseLayout>
