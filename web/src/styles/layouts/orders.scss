@@ -28,6 +28,7 @@
             .order_author {
                 color: colors.$mid_1;
                 font-size: 1.1em;
+                text-transform: capitalize;
             }
 
             .order_price {
@@ -61,7 +62,22 @@
 
             .status_awaiting {
                 background-color: #BF9454A6;
-                color: colors.$group4_color_2;
+                color: colors.$mid_1;
+            }
+
+            .status_pending {
+                background-color: colors.$group3_color_1;
+                color: colors.$lightest;
+            }
+
+            .status_confirmed {
+                background-color: colors.$group1_color_2;
+                color: colors.$lightest;
+            }
+
+            .status_cancelled {
+                background-color: colors.$group2_color_2;
+                color: colors.$lightest;
             }
         }
     }

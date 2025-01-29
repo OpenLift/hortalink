@@ -24,6 +24,28 @@ main {
     margin-top: 2rem;
 }
 
+.add_product_button {
+    position: fixed;
+    display: block;
+
+    width: fit-content;
+    max-width: 100%;
+    padding: 15px 10px;
+
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+
+    right: 1.5rem;
+    bottom: 85px;
+
+    background-color: colors.$group1_color_2;
+    color: colors.$lightest;
+
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
 .line {
     width: 100%;
     max-width: 430px !important;
