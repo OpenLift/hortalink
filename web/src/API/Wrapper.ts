@@ -336,6 +336,12 @@ class APIWrapper<F extends RequestAPIFrom> {
         
         return data
     }
+
+    async deleteOrder(orderId: number) {
+        const data = await RequestAPI(this.from, `/v1/users/@me/orders/${orderId}`, undefined, "include", undefined, "DELETE") as unknown
+        
+        return data
+    }
 }
 
 
