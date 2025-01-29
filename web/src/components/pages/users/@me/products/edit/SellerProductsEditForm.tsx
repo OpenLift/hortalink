@@ -171,8 +171,13 @@ export default function SellerProductsEditForm(props: { seller_id: number, produ
                     <div>
                         <h2>Tipo</h2>
                         <select name="unit">
-                            <option value={1}>kg</option>
-                            <option value={2}>g</option>
+                            <option value={0}>kg</option>
+                            <option value={1}>hg</option>
+                            <option value={2}>dag</option>
+                            <option value={3}>G</option>
+                            <option value={4}>Cg</option>
+                            <option value={5}>Mg</option>
+                            <option value={6}>U</option>
                         </select>
                     </div>
                 </section>
