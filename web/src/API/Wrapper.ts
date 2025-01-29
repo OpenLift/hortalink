@@ -4,6 +4,7 @@ import type { Cart, DetailedProduct, FullRating, IndividualRating, Product, Prod
 import type { Schedule } from "@interfaces/Schedule"
 import type { Seller } from "@interfaces/Seller"
 import type { UserResults } from "@components/pages/home/search/Search"
+import type { SellerOrder } from "@interfaces/Orders"
 
 class APIWrapper<F extends RequestAPIFrom> {
     private from: F
@@ -326,6 +327,12 @@ class APIWrapper<F extends RequestAPIFrom> {
         const data = await RequestAPI(this.from, `/v1/users/@me/orders/${orderId}`, undefined, "include", {
             "Cookie": `session_id=${session_id}`
         })
+        
+        return data
+    }
+
+    async getOrdersFromClient(): Promise<SellerOrder[]> {
+        const data = await RequestAPI(this.from, `/v1/users/@me/orders`, undefined, "include") as SellerOrder[]
         
         return data
     }

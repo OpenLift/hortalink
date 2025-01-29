@@ -1,0 +1,148 @@
+@use "../../../colors";
+
+@mixin flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+header {
+    width: 100%;
+    margin: auto;
+
+    margin-top: 2rem;
+
+    h1 {
+        text-align: center;
+        font-size: 1.563em;
+
+        color: #262626
+    }
+}
+
+main {
+    width: 100%;
+    max-width: 394px;
+
+    margin: auto;
+
+    h2 {
+        text-transform: capitalize;
+    }
+
+    p {
+        font-weight: 700;
+    }
+
+    #order_code {
+        width: fit-content;
+        max-width: 100%;
+
+        margin: auto;
+        margin-top: 1rem;
+        margin-bottom: 3rem;
+
+        font-weight: 600;
+        font-size: 1.12em;
+    }
+
+    h2 {
+        font-size: 1.2em;
+    }
+
+    .client_card {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 10px 2px;
+
+        border-radius: 13px;
+
+        margin-top: 0.6rem;
+
+        background-color: #2A9F62E5;
+
+        .client_photo {
+            border-radius: 50%;
+            border: 5px solid white;
+        }
+
+        .text {
+            h2, p {
+                color: colors.$lightest;
+                font-size: 1.1em;
+
+                text-transform: capitalize;
+            }
+        }
+
+        .see_profile {
+            color: colors.$group1_color_1;
+            text-decoration: none;
+
+            font-weight: 700;
+        }
+    }
+
+    .order_products {
+        @include flex();
+        flex-direction: column;
+        align-items: flex-start;
+
+        width: 100%;
+
+        .order_product {
+            display: grid;
+            grid-template-columns: 94px 3.5fr 1.2fr;
+
+            font-weight: 500;
+
+            .product_img {
+                border-radius: 6px;
+            }
+    
+            .totalValue {
+                justify-self: end;
+                font-weight: 800;
+            }
+        }
+    }
+
+    .update_button {
+        position: fixed;
+        display: block;
+
+        width: 100%;
+        max-width: 391px;
+        padding: 15px 10px;
+
+        border: none;
+        border-radius: 8px;
+
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 85px;
+
+        background-color: colors.$group1_color_3;
+        color: colors.$lightest;
+
+        font-size: 1.1em;
+        font-weight: 600;
+    }
+
+    margin-bottom: 6rem;
+}
+
+.label_text {
+    color: colors.$mid_1;
+}
+
+.price {
+    color: colors.$group1_color_3;
+}
+
+.line {
+    width: 100%;
+    max-width: 430px !important;
+}

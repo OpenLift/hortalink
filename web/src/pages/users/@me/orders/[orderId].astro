@@ -1,0 +1,36 @@
+---
+import "@styles/pages/users/@me/order.scss";
+import APIWrapper, { RequestAPIFrom } from "@HortalinkAPIWrapper";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import SellerOrderHeader from "@components/pages/users/@me/orders/order/SellerOrderHeader.astro";
+import SellerOrderData from "@components/pages/users/@me/orders/order/SellerOrderData"
+
+const API = new APIWrapper(RequestAPIFrom.Server)
+
+const params = Astro.params
+const id = params.orderId
+const product_id = Astro.url.searchParams.get("product_id") || null
+
+const session_cookie = Astro.cookies.get("session_id")
+const session_id = session_cookie?.value || null
+
+const order = await API.getOrder(id, session_id).catch(e => null) as any
+const product = order.products.find(p => p.product_id == product_id)
+
+
+if(!product) {
+    Astro.response.status = 404;
+    Astro.response.statusText = "Not found";
+}
+---
+
+<BaseLayout>
+    <Fragment slot="head">
+        <title>Detalhes do pedido</title>
+    </Fragment>
+    <Fragment slot="body">
+        <SellerOrderHeader />
+        <div class="line" />
+        <SellerOrderData product={product} fullOrder={order} />
+    </Fragment>
+</BaseLayout>
