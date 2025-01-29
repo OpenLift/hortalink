@@ -1,8 +1,14 @@
 import type { SellerOrder, SellerOrderProduct } from "@interfaces/Orders";
 
 const UNITS = {
-    1: "kg",
-    2: "g"
+    0: "kg",
+    1: "hg",
+    2: "dag",
+    3: "G",
+    4: "Cg",
+    5: "Mg",
+    6: "U"
+
 }
 
 export default function SellerOrderData(props: { product: SellerOrderProduct, fullOrder: SellerOrder }) {
