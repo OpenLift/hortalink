@@ -16,7 +16,7 @@ pub async fn messages(
     let messages = sqlx::query_as::<_, Message>(
         r#"
             SELECT 
-                (m.author_id = $1) AS is_author, m.content, m.created_at
+                (m.author_id = $1) AS is_author, m.content, m.created_at, m.viewed
             FROM messages m
             INNER JOIN chats c ON m.chat = c.id
             WHERE m.chat = $2 AND (c.user1 = $1 OR c.user2 = $1)
@@ -29,6 +29,16 @@ pub async fn messages(
         .bind(query.per_page)
         .bind((query.page - 1) * query.per_page)
         .fetch_all(&state.pool)
+        .await?;
+    
+    sqlx::query(r#"
+        UPDATE messages
+        SET viewed = TRUE
+        WHERE chat = $2 AND author_id != $1 AND viewed = FALSE;
+    "#)
+        .bind(user.id)
+        .bind(chat_id)
+        .execute(&state.pool)
         .await?;
 
     Ok(Json(messages))

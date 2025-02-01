@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS "messages"
     content    TEXT      NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     edited     BOOLEAN            DEFAULT FALSE,
-    chat       BIGINT REFERENCES "chats" (id)
+    chat       BIGINT REFERENCES "chats" (id),
+    viewed     BOOLEAN            DEFAULT FALSE
 );
 
 CREATE INDEX chating ON "messages" (chat);

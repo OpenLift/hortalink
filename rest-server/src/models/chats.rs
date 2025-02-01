@@ -18,4 +18,5 @@ pub struct Message {
     content: String,
     #[serde(serialize_with = "serialize_timestamp")]
     created_at: NaiveDateTime,
+    viewed: bool,
 }
