@@ -9,7 +9,7 @@ pub struct ChatPreview {
     id: i64,
     #[sqlx(flatten)]
     user: PreviewUser,
-    last_message: String,
+    last_message: Option<String>,
 }
 
 #[derive(Serialize, sqlx::FromRow)]
