@@ -51,7 +51,7 @@ pub async fn updated(
 }
 
 async fn get_opposite(chat_id: i64, author_id: i32, pool: &Pool<Postgres>) -> i32 {
-    let (user1, user2) = sqlx::query_scalar::<_, (i32, i32)>(
+    let (user1, user2) = sqlx::query_as::<_, (i32, i32)>(
         r#"
             SELECT user1, user2
             FROM chats

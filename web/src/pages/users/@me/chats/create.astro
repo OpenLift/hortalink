@@ -1,0 +1,11 @@
+---
+import CreateChatPageLayout from "@layouts/CreateChatPageLayout.astro";
+import ChatsSearchBar from "@components/pages/users/@me/chats/ChatsSearchbar";
+import CreateChatOptions from "@components/pages/users/@me/chats/CreateChatOptions";
+---
+
+<CreateChatPageLayout>
+    <ChatsSearchBar client:load />
+    <div class="line" />
+    <CreateChatOptions client:load />
+</CreateChatPageLayout>

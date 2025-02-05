@@ -1,0 +1,19 @@
+---
+import ChatsPageLayout from "@layouts/ChatsPageLayout.astro";
+import ChatsSearchBar from "@components/pages/users/@me/chats/ChatsSearchbar";
+import ChatsContainer from "@components/pages/users/@me/chats/ChatsComponent";
+import APIWrapper, { RequestAPIFrom } from "@HortalinkAPIWrapper";
+
+const wrapper = new APIWrapper(RequestAPIFrom.Server)
+
+const session_cookie = Astro.cookies.get("session_id")
+const session_id = session_cookie?.value || null
+
+const chats = await wrapper.getChats(session_id).catch(e => [])
+---
+
+<ChatsPageLayout>
+    <ChatsSearchBar client:load />
+    <div class="line" />
+    <ChatsContainer chats={chats} client:load />
+</ChatsPageLayout>

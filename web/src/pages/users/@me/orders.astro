@@ -14,7 +14,6 @@ const session_id = session_cookie?.value || null
 
 const session = session_id ? await wrapper.getCurrentSession(session_id) : null
 
-
 export const prerender = false
 ---
 

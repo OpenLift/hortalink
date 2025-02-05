@@ -1,0 +1,121 @@
+@use "../colors";
+
+@mixin flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+header {
+    width: 100%;
+    margin: auto;
+
+    margin-top: 2rem;
+
+    h1 {
+        text-align: center;
+        font-size: 1.563em;
+
+        color: #262626
+    }
+}
+
+.line {
+    width: 100%;
+    max-width: 430px !important;
+}
+
+main {
+    width: 100%;
+    max-width: 430px;
+
+    margin: auto;
+
+    h2 {
+        font-size: 1.2em;
+        color: #262626;
+    }
+
+    .searchbar_container {
+        @include flex();
+        gap: 1.3rem;
+    
+        width: 100%;
+        margin-top: 1rem;
+    
+        .input {
+            @include flex();
+            width: 100%;
+            max-width: 311px;
+            
+            input[type=text] {
+                width: 100%;
+                max-width: 311px;
+        
+                padding: 15px 16px;
+                border-radius: 13px 0 0 13px;
+                background-color: adjust-color(colors.$light_1, $alpha: -0.75);
+        
+                &::placeholder {
+                    font-weight: 600;
+                    color: colors.$mid_1;
+                }
+            }
+    
+            .search_icon {
+                @include flex();
+                
+                border-radius: 0 13px 13px 0;
+                background-color: adjust-color(colors.$light_1, $alpha: -0.75);
+                height: 46px;
+                padding: 0 15px;
+            }
+        }
+
+        .icon {
+            cursor: pointer;
+        }
+    }
+
+    .users_container {
+        @include flex();
+        flex-direction: column;
+        gap: 1.5rem;
+
+        .user_preview {
+            @include flex();
+            justify-content: flex-start;
+
+            gap: 1rem;
+
+            width: 100%;
+            max-width: 416px;
+
+            color: #262626;
+
+            .user_image {
+                border-radius: 50%;
+                object-fit: contain;
+            }
+
+            .side {
+                @include flex();
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 0.5rem;
+
+                h2 {
+                    font-size: 1em;
+                    text-transform: capitalize;
+                }
+
+                p {
+                    font-size: 0.94em;
+                    color: colors.$mid_1;
+
+                    font-weight: 500;
+                }
+            }
+        }
+    }
+}

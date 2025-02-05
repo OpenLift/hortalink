@@ -5,6 +5,7 @@ import type { Schedule } from "@interfaces/Schedule"
 import type { Seller } from "@interfaces/Seller"
 import type { UserResults } from "@components/pages/home/search/Search"
 import type { SellerOrder } from "@interfaces/Orders"
+import type { ChatMessage, ChatPreview } from "@interfaces/Chat"
 
 class APIWrapper<F extends RequestAPIFrom> {
     private from: F
@@ -341,6 +342,56 @@ class APIWrapper<F extends RequestAPIFrom> {
         const data = await RequestAPI(this.from, `/v1/users/@me/orders/${orderId}`, undefined, "include", undefined, "DELETE") as unknown
         
         return data
+    }
+
+    private async getChatsFromClient() {
+        const data = await RequestAPI(this.from, `/v1/users/@me/chats`, undefined, "include") as ChatPreview[]
+
+        return data
+    }
+    
+    private async getChatsFromServer(session_id: string) {
+        const data = await RequestAPI(this.from, `/v1/users/@me/chats`, undefined, "include", {
+            "Cookie": `session_id=${session_id}`
+        }) as ChatPreview[]
+
+        return data
+    }
+
+    public async getChats(session_id: F extends RequestAPIFrom.Server ? string : undefined) {
+        switch (this.from) {
+            case RequestAPIFrom.Client:
+                return await this.getChatsFromClient()
+            case RequestAPIFrom.Server:
+                return await this.getChatsFromServer(session_id)
+        }
+    }
+
+    public async getChatMessagesFromClient(chat_id: number, page: number, per_page: number) {
+        const params = new URLSearchParams()
+        params.append("page", page.toString())
+        params.append("per_page", per_page.toString())
+
+        return await RequestAPI(this.from, `/v1/users/@me/chats/${chat_id}/messages`, params, "include") as ChatMessage[]
+    }
+
+    public async getChatMessagesFromServer(chat_id: number, page: number, per_page: number, session_id: string) {
+        const params = new URLSearchParams()
+        params.append("page", page.toString())
+        params.append("per_page", per_page.toString())
+
+        return await RequestAPI(this.from, `/v1/users/@me/chats/${chat_id}/messages`, params, "include", {
+            "Cookie": `session_id=${session_id}`
+        }) as ChatMessage[]
+    }
+
+    public async getChatMessages(chat_id: number, page: number, per_page: number, session_id: F extends RequestAPIFrom.Server ? string : undefined) {
+        switch (this.from) {
+            case RequestAPIFrom.Client:
+                return await this.getChatMessagesFromClient(chat_id, page, per_page)
+            case RequestAPIFrom.Server:
+                return await this.getChatMessagesFromServer(chat_id, page, per_page, session_id)
+        }
     }
 }
 

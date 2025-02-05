@@ -1,0 +1,20 @@
+---
+import type { ChatPreview } from '@interfaces/Chat'
+
+interface Props {
+    chatPreview: ChatPreview
+}
+
+const preview = Astro.props?.chatPreview
+---
+
+<header>
+    <img
+        class="user_img"
+        src={`${import.meta.env.PUBLIC_FRONTEND_CDN_URL}/avatars/${preview.user.id}/${preview.user.avatar}.png?size=128`}
+        width={52}
+        height={52}
+    />
+
+    <h1>{preview.user.name}</h1>
+</header>

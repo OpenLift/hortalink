@@ -5,6 +5,15 @@ interface User {
     profile: Profile
 }
 
+interface PreviewUser {
+    id: number,
+    name: string,
+    avatar?: string,
+    followers: number,
+    orders_received: number
+}
+
 export type {
-    User
+    User,
+    PreviewUser
 }

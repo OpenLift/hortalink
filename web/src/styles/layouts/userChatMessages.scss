@@ -1,0 +1,113 @@
+@use "../colors";
+
+@mixin flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+header {
+    @include flex();
+
+    gap: 1rem;
+
+    width: 100%;
+    margin: auto;
+    margin-top: 0.5rem;
+
+    h1 {
+        text-align: center;
+        font-size: 1.563em;
+
+        color: #262626
+    }
+
+    .user_img {
+        object-fit: contain;
+        border-radius: 50%;
+    }
+}
+
+.line {
+    width: 100%;
+    max-width: 100% !important;
+
+    margin-bottom: 0 !important;
+}
+
+main {
+    width: 100%;
+    background-color: #2A9F6206;
+
+    min-height: 76vh;
+    
+    .messages_container {
+        max-width: 430px;
+        width: 100%;
+
+        margin: auto;
+        margin-bottom: 3rem;
+
+        padding: 25px;
+
+        .message {
+            width: fit-content;
+            max-width: 300px;
+
+            padding: 15px;
+
+            margin-top: 0.3rem;
+
+            .msg_data {
+                margin-top: 0.5rem;
+
+                p {
+                    font-size: 0.75em;
+                }
+            }
+        }
+
+        .msg_non_author {
+            background-color: rgba(175, 175, 175, 0.28);
+            color: #262626;
+
+            margin-right: auto;
+            border-radius: 10px 10px 10px 0px;
+        }
+
+        .msg_author {
+            background-color: colors.$group1_color_2;
+            color: white;
+            
+            margin-left: auto;
+            border-radius: 10px 10px 0px 10px;
+
+            .msg_data {
+                p {
+                    width: fit-content;
+                    max-width: 100%;
+                    margin-left: auto;
+                }
+            }
+        }
+    }
+
+    .message_input {
+        display: block;
+        position: fixed;
+
+        width: 100%;
+        max-width: 336px;
+
+        padding: 13px;
+
+        border-radius: 40.633px;
+        background: rgb(213, 212, 212);
+        color: colors.$mid_1;
+
+        bottom: 80px;
+        left: 50%;
+        
+        transform: translateX(-50%);
+    }
+}

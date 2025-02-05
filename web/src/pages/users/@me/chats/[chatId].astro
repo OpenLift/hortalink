@@ -1,0 +1,30 @@
+---
+import ChatMessagesLayout from "@layouts/ChatMessagesLayout.astro";
+import ChatHeader from "@components/pages/users/@me/chats/messages/ChatHeader.astro";
+import ChatMessages from "@components/pages/users/@me/chats/messages/ChatMessages";
+import APIWrapper, { RequestAPIFrom } from "@HortalinkAPIWrapper";
+
+const wrapper = new APIWrapper(RequestAPIFrom.Server)
+
+const session_cookie = Astro.cookies.get("session_id")
+const session_id = session_cookie?.value || null
+
+const chatId = Astro.params.chatId
+
+//const chats = await wrapper.getChats(session_id).catch(e => [])
+const chatsPreview = await wrapper.getChats(session_id)
+const preview = chatsPreview.find(p => p.id.toString() === chatId)
+
+const messages = await wrapper.getChatMessages(Number(chatId), 1, 10, session_id)
+
+---
+
+<ChatMessagesLayout>
+    <Fragment slot="header">
+        <ChatHeader chatPreview={preview} />
+    </Fragment>
+    <Fragment slot="main">
+        <ChatMessages pre_rendered={messages} session_id={session_id} client:load />
+    </Fragment>
+    
+</ChatMessagesLayout>

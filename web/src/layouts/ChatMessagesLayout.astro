@@ -1,0 +1,19 @@
+---
+import "@styles/layouts/userChatMessages.scss";
+import BaseLayout from "./BaseLayout.astro";
+---
+
+<BaseLayout>
+    <Fragment slot="head">
+        <title>Hortalink | Conversa</title>
+    </Fragment>
+    <Fragment slot="body">
+        <header>
+            <slot name="header" />
+        </header>
+        <div class="line" />
+        <main>
+            <slot name="main" /> 
+        </main>
+    </Fragment>
+</BaseLayout>
