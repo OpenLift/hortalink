@@ -24,7 +24,7 @@ const messages = await wrapper.getChatMessages(Number(chatId), 1, 10, session_id
         <ChatHeader chatPreview={preview} />
     </Fragment>
     <Fragment slot="main">
-        <ChatMessages pre_rendered={messages} session_id={session_id} client:load />
+        <ChatMessages pre_rendered={messages} session_id={session_id} chat_id={Number(chatId)} client:load />
     </Fragment>
     
 </ChatMessagesLayout>

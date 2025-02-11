@@ -3,7 +3,7 @@ import "@styles/layouts/userChatMessages.scss";
 import BaseLayout from "./BaseLayout.astro";
 ---
 
-<BaseLayout>
+<BaseLayout no_nav={true}>
     <Fragment slot="head">
         <title>Hortalink | Conversa</title>
     </Fragment>
@@ -11,7 +11,6 @@ import BaseLayout from "./BaseLayout.astro";
         <header>
             <slot name="header" />
         </header>
-        <div class="line" />
         <main>
             <slot name="main" /> 
         </main>

@@ -1,5 +1,6 @@
+import APIWrapper, { RequestAPIFrom } from "@HortalinkAPIWrapper";
 import type { ChatMessage } from "@interfaces/Chat";
-import { useEffect, useState } from "react";
+import { createRef, useEffect, useState } from "react";
 
 interface DisplayMessage {
     content: string,
@@ -16,7 +17,10 @@ interface MessageNotification {
     created_at: Date
 }
 
-export default function ChatMessages(props: { pre_rendered: ChatMessage[], session_id: string }) {
+export default function ChatMessages(props: { pre_rendered: ChatMessage[], session_id: string, chat_id: number }) {
+    const API = new APIWrapper(RequestAPIFrom.Client)
+    const textInputRef = createRef<HTMLInputElement>()
+
     const sortedMessages = props.pre_rendered.sort((a, b) => a.created_at - b.created_at)
     
     const [messages, setMessages] = useState<DisplayMessage[]>(sortedMessages.map(msg => {
@@ -46,6 +50,8 @@ export default function ChatMessages(props: { pre_rendered: ChatMessage[], sessi
             const decoded_payload = JSON.parse(msg.data)
             const notification = decoded_payload.d as MessageNotification
 
+            console.log(notification)
+
             setMessages((oldMessages) => {
                 const newMessage: DisplayMessage = {
                     content: notification.content,
@@ -58,6 +64,25 @@ export default function ChatMessages(props: { pre_rendered: ChatMessage[], sessi
             })
         })
     }, [])
+
+    function createMessage(content: string) {
+        if(!content || !content.length) {
+            return
+        }
+
+        API.createChatMessage(props.chat_id, content, undefined).then(() => {
+            setMessages((oldMessages) => {
+                const newMessage: DisplayMessage = {
+                    content: content,
+                    created_at: new Date(),
+                    is_author: true,
+                    viewed: true
+                }
+    
+                return [...oldMessages, newMessage]
+            })
+        })
+    }
 
     return (
         <>
@@ -77,7 +102,20 @@ export default function ChatMessages(props: { pre_rendered: ChatMessage[], sessi
                     })
                 }
             </section>
-            <input type="text" className="message_input" />
+            <div className="message_bar">
+                <div className="line" style={{ maxWidth: "400px !important", margin: "0 auto" }} />
+                <div className="bar_items">
+                    <input type="text" className="message_input" ref={textInputRef} />
+                    <button className="send_message" onClick={() => createMessage(textInputRef.current.value)}>
+                        <img
+                            src="/assets/mic_black.svg"
+                            width={28}
+                            height={28}
+                            alt="Ícone de um avião de papel, clique para enviar a mensagem após escrever."
+                        />
+                    </button>
+                </div>
+            </div>
         </>
     )
 }

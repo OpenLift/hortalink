@@ -393,6 +393,28 @@ class APIWrapper<F extends RequestAPIFrom> {
                 return await this.getChatMessagesFromServer(chat_id, page, per_page, session_id)
         }
     }
+
+    public async createChatMessageFromClient(chat_id: number, content: string) {
+        return await RequestAPI(this.from, `/v1/users/@me/chats/${chat_id}/messages`, null, "include", {
+            "Content-Type": "application/json"
+        }, "POST", JSON.stringify({ content })) as ChatMessage[]
+    }
+
+    public async createChatMessageFromServer(chat_id: number, content: string, session_id: string) {
+        return await RequestAPI(this.from, `/v1/users/@me/chats/${chat_id}/messages`, null, "include", {
+            "Cookie": `session_id=${session_id}`,
+            "Content-Type": "application/json"
+        }, "POST", JSON.stringify({ content })) as ChatMessage[]
+    }
+
+    public async createChatMessage(chat_id: number, content: string, session_id: F extends RequestAPIFrom.Server ? string : undefined) {
+        switch (this.from) {
+            case RequestAPIFrom.Client:
+                return await this.createChatMessageFromClient(chat_id, content)
+            case RequestAPIFrom.Server:
+                return await this.createChatMessageFromServer(chat_id, content, session_id)
+        }
+    }
 }
 
 

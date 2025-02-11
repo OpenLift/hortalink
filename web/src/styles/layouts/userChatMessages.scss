@@ -7,24 +7,32 @@
 }
 
 header {
-    @include flex();
-
-    gap: 1rem;
-
-    width: 100%;
+    width: 100vw;
     margin: auto;
-    margin-top: 0.5rem;
 
-    h1 {
-        text-align: center;
-        font-size: 1.563em;
+    position: fixed;
+    background-color: #f2f2f2;
 
-        color: #262626
-    }
+    .header_content {
+        @include flex();
 
-    .user_img {
-        object-fit: contain;
-        border-radius: 50%;
+        gap: 1rem;
+    
+        width: 100vw;
+        margin: auto;
+        margin-top: 0.5rem;
+    
+        h1 {
+            text-align: center;
+            font-size: 1.563em;
+    
+            color: #262626
+        }
+    
+        .user_img {
+            object-fit: contain;
+            border-radius: 50%;
+        }
     }
 }
 
@@ -35,11 +43,15 @@ header {
     margin-bottom: 0 !important;
 }
 
+body {
+    background-color: #2A9F6206;
+}
+
 main {
     width: 100%;
-    background-color: #2A9F6206;
 
     min-height: 76vh;
+    padding-top: 5rem;
     
     .messages_container {
         max-width: 430px;
@@ -92,22 +104,63 @@ main {
         }
     }
 
-    .message_input {
-        display: block;
+    .message_bar {
         position: fixed;
-
-        width: 100%;
-        max-width: 336px;
-
-        padding: 13px;
-
-        border-radius: 40.633px;
-        background: rgb(213, 212, 212);
-        color: colors.$mid_1;
-
-        bottom: 80px;
-        left: 50%;
+        display: flex;
         
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 0.3rem;
+
+        width: 100vw;
+        bottom: 0px;
+        left: 50%;
         transform: translateX(-50%);
+
+        background-color: #f2f2f2;
+
+        padding: 20px;
+
+        .bar_items {
+            display: flex;
+        
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+
+            width: 100%;
+
+            .message_input {
+                display: block;
+    
+                width: 100%;
+                max-width: 336px;
+        
+                padding: 13px;
+        
+                border-radius: 40.633px;
+                background-color: rgb(213, 212, 212);
+                color: colors.$mid_1;
+            }
+    
+            .send_message {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+    
+                padding: 5.65px;
+                border-radius: 50%;
+    
+                background-color: #00927C;
+                border: none;
+    
+                img {
+                    object-fit: contain;
+                }
+
+                cursor: pointer;
+            }
+        }
     }
 }
